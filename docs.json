@@ -38,26 +38,40 @@
     }
   ],
   "navigation": {
-    "开始使用": [
-      "index",
-      "quickstart",
-      "essentials/authentication"
-    ],
-    "API参考": [
-      "api-reference/overview",
-      "api-reference/hairstyle-editor-pro",
-      "api-reference/async-task-results",
-      "api-reference/face-analysis"
-    ],
-    "开发指南": [
-      "development",
-      "essentials/image-requirements",
-      "essentials/error-handling",
-      "essentials/best-practices"
-    ],
-    "其他": [
-      "essentials/errors",
-      "essentials/pricing"
+    "groups": [
+      {
+        "group": "开始使用",
+        "pages": [
+          "index",
+          "quickstart",
+          "essentials/authentication"
+        ]
+      },
+      {
+        "group": "API参考",
+        "pages": [
+          "api-reference/overview",
+          "api-reference/hairstyle-editor-pro",
+          "api-reference/async-task-results",
+          "api-reference/face-analysis"
+        ]
+      },
+      {
+        "group": "开发指南",
+        "pages": [
+          "development",
+          "essentials/image-requirements",
+          "essentials/error-handling",
+          "essentials/best-practices"
+        ]
+      },
+      {
+        "group": "其他",
+        "pages": [
+          "essentials/errors",
+          "essentials/pricing"
+        ]
+      }
     ]
   },
   "footerSocials": {
