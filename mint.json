@@ -48,7 +48,12 @@
     },
     {
       "group": "API参考",
-      "openapi": "openapi.json"
+      "pages": [
+        "api-reference/overview",
+        "api-reference/hairstyle-editor-pro",
+        "api-reference/async-task-results",
+        "api-reference/face-analysis"
+      ]
     },
     {
       "group": "开发指南",
@@ -85,14 +90,5 @@
       "apiKey": "phc_YOUR_POSTHOG_API_KEY"
     }
   },
-  "cname": "docs.ailabtools.com",
-  "api": {
-    "playground": {
-      "display": "interactive"
-    },
-    "examples": {
-      "languages": ["curl", "python", "javascript"],
-      "defaults": "required"
-    }
-  }
+  "cname": "docs.ailabtools.com"
 }
