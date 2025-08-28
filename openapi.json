@@ -2,11 +2,11 @@
   "openapi": "3.1.0",
   "info": {
     "title": "AILabTools API",
-    "description": "基于稳定扩散模型的发型编辑Pro功能API",
+    "description": "Hairstyle Changer Pro 与异步查询接口",
     "version": "1.0.0"
   },
   "servers": [
-    { "url": "https://api.ailabtools.com/v1" }
+    { "url": "https://www.ailabapi.com" }
   ],
   "security": [ { "apiKeyAuth": [] } ],
   "components": {
@@ -16,80 +16,55 @@
     "schemas": {
       "HairstyleEditorForm": {
         "type": "object",
-        "required": ["image"],
+        "required": ["task_type", "auto", "image", "hair_style"],
         "properties": {
+          "task_type": { "type": "string", "description": "任务类型，固定 async" },
+          "auto": { "type": "integer", "description": "模式，固定 1" },
           "image": { "type": "string", "format": "binary", "description": "上传的人像图片文件（PNG/JPG/JPEG）" },
-          "hairstyle": { "type": "string", "description": "发型类型，可选" },
-          "hair_color": { "type": "string", "description": "发色，可选" }
+          "hair_style": { "type": "string", "description": "发型，参考官方枚举" },
+          "color": { "type": "string", "nullable": true, "description": "发色，可选" },
+          "image_size": { "type": "integer", "nullable": true, "description": "返回图片张数(1-4)，默认1" }
         }
       },
       "HairstyleEditorResponse": {
         "type": "object",
         "properties": {
-          "request_id": { "type": "string", "example": "req_123456789" },
-          "log_id": { "type": "string", "example": "log_987654321" },
-          "error_code": { "type": "integer", "example": 0 },
-          "result": {
-            "type": "object",
-            "properties": {
-              "task_id": { "type": "string", "example": "task_abcdef123456" }
-            }
-          }
-        }
-      },
-      "AsyncTaskResponse": {
-        "type": "object",
-        "properties": {
           "request_id": { "type": "string" },
           "log_id": { "type": "string" },
-          "error_code": { "type": "integer", "example": 0 },
-          "result": {
+          "error_code": { "type": "integer" },
+          "error_msg": { "type": "string", "nullable": true },
+          "error_detail": {
             "type": "object",
             "properties": {
-              "task_id": { "type": "string" },
-              "status": { "type": "string", "enum": ["pending", "processing", "completed", "failed"] },
-              "result_image": { "type": "string", "format": "byte" }
+              "status_code": { "type": "integer" },
+              "code": { "type": "string", "nullable": true },
+              "code_message": { "type": "string", "nullable": true },
+              "message": { "type": "string", "nullable": true }
             }
-          }
+          },
+          "task_type": { "type": "string" },
+          "task_id": { "type": "string" }
         }
       },
-      "FaceAnalysisForm": {
-        "type": "object",
-        "required": ["image"],
-        "properties": {
-          "image": { "type": "string", "format": "binary", "description": "上传的人像图片文件（PNG/JPG/JPEG）" }
-        }
-      },
-      "FaceAnalysisResponse": {
+      "AsyncTaskResultsResponse": {
         "type": "object",
         "properties": {
-          "request_id": { "type": "string" },
-          "log_id": { "type": "string" },
-          "error_code": { "type": "integer", "example": 0 },
-          "result": {
+          "error_code": { "type": "integer" },
+          "error_msg": { "type": "string", "nullable": true },
+          "error_detail": {
             "type": "object",
             "properties": {
-              "face_num": { "type": "integer", "example": 1 },
-              "face_info": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "face_id": { "type": "string" },
-                    "face_rect": {
-                      "type": "object",
-                      "properties": {
-                        "x": { "type": "integer" },
-                        "y": { "type": "integer" },
-                        "width": { "type": "integer" },
-                        "height": { "type": "integer" }
-                      }
-                    },
-                    "face_angle": { "type": "number" },
-                    "face_proportion": { "type": "number" }
-                  }
-                }
-              }
+              "status_code": { "type": "integer" },
+              "code": { "type": "string", "nullable": true },
+              "code_message": { "type": "string", "nullable": true },
+              "message": { "type": "string", "nullable": true }
+            }
+          },
+          "task_status": { "type": "integer", "description": "0:排队 1:处理中 2:成功" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "images": { "type": "array", "items": { "type": "string", "format": "uri" } }
             }
           }
         }
@@ -104,10 +79,10 @@
     }
   },
   "paths": {
-    "/hairstyle-editor-pro": {
+    "/api/portrait/effects/hairstyle-editor-pro": {
       "post": {
-        "summary": "发型编辑Pro",
-        "description": "基于稳定扩散模型，智能编辑人像图片中的发型和颜色",
+        "summary": "Hairstyle Changer Pro",
+        "description": "根据官方文档，使用 multipart/form-data 提交文件与表单字段。",
         "requestBody": {
           "required": true,
           "content": {
@@ -117,39 +92,20 @@
           }
         },
         "responses": {
-          "200": { "description": "请求成功", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/HairstyleEditorResponse" } } } },
-          "400": { "description": "请求参数错误", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/HairstyleEditorResponse" } } } },
+          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
         }
       }
     },
-    "/async-task-results": {
+    "/api/ai/common/async-task-results": {
       "get": {
-        "summary": "异步任务查询",
-        "description": "查询异步任务的处理结果，获取最终的图片处理结果",
+        "summary": "查询异步任务结果",
         "parameters": [
           { "name": "task_id", "in": "query", "required": true, "schema": { "type": "string" }, "description": "异步任务ID" }
         ],
         "responses": {
-          "200": { "description": "请求成功", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AsyncTaskResponse" } } } },
-          "400": { "description": "请求参数错误", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
-        }
-      }
-    },
-    "/face-analysis": {
-      "post": {
-        "summary": "人脸分析",
-        "description": "分析图片中的人脸信息，包括人脸数量、位置、角度等，用于前端验证",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": { "$ref": "#/components/schemas/FaceAnalysisForm" }
-            }
-          }
-        },
-        "responses": {
-          "200": { "description": "请求成功", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FaceAnalysisResponse" } } } },
-          "400": { "description": "请求参数错误", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AsyncTaskResultsResponse" } } } },
+          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
         }
       }
     }
