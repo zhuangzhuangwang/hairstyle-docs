@@ -1,0 +1,238 @@
+---
+title: "人脸分析"
+description: "分析图片中的人脸信息，包括人脸数量、位置、角度等，用于前端验证"
+openapi: "openapi.json POST /face-analysis"
+---
+
+# 人脸分析
+
+分析图片中的人脸信息，包括人脸数量、位置、角度等，用于前端验证。
+
+## 验证标准
+
+### 人脸数量验证
+
+- **`face_num == 0`**: 未检测到人脸，返回错误
+- **`face_num != 1`**: 检测到多个人脸，返回错误
+- **`face_num == 1`**: 检测到一个人脸，符合要求
+
+### 人脸角度验证
+
+- **`face_angle <= 30`**: 人脸角度在可接受范围内
+- **`face_angle > 30`**: 人脸角度过大，建议使用正面照片
+
+### 人脸占比验证
+
+- **`face_proportion >= 0.1`**: 人脸占比大于10%，符合要求
+- **`face_proportion < 0.1`**: 人脸占比过小，建议使用人脸更大的图片
+
+## 错误码
+
+| 错误码 | 描述 |
+|--------|------|
+| 0 | 成功 |
+| 1001 | 参数错误 |
+| 1002 | 图片格式不支持 |
+| 1003 | 图片大小超限 |
+| 1004 | 图片分辨率不符合要求 |
+
+## 使用示例
+
+<Tabs>
+<Tab title="JavaScript">
+```javascript
+async function validateImage(imageFile) {
+  // 将图片转换为Base64
+  const base64Image = await fileToBase64(imageFile);
+  
+  const response = await fetch('https://api.ailabtools.com/v1/face-analysis', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      image: base64Image
+    })
+  });
+  
+  const result = await response.json();
+  
+  if (result.error_code !== 0) {
+    throw new Error(result.error_detail.message);
+  }
+  
+  const { face_num, face_info } = result.result;
+  
+  // 验证人脸数量
+  if (face_num === 0) {
+    throw new Error('未检测到人脸，请确保图片包含清晰的人脸');
+  }
+  
+  if (face_num > 1) {
+    throw new Error('检测到多个人脸，请使用只包含一个人脸的图片');
+  }
+  
+  // 验证人脸角度和占比
+  const face = face_info[0];
+  if (face.face_angle > 30) {
+    throw new Error('人脸角度过大，请使用正面或接近正面的照片');
+  }
+  
+  if (face.face_proportion < 0.1) {
+    throw new Error('人脸太小，请使用人脸占比更大的图片');
+  }
+  
+  return {
+    isValid: true,
+    faceInfo: face
+  };
+}
+
+// 辅助函数：文件转Base64
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+
+// 使用示例
+const imageInput = document.getElementById('imageInput');
+imageInput.addEventListener('change', async (event) => {
+  try {
+    const file = event.target.files[0];
+    const validation = await validateImage(file);
+    console.log('图片验证通过:', validation);
+  } catch (error) {
+    console.error('图片验证失败:', error.message);
+  }
+});
+```
+</Tab>
+
+<Tab title="Python">
+```python
+import requests
+import base64
+
+def validate_image(image_path, api_key):
+    """验证图片中的人脸信息"""
+    
+    # 读取并编码图片
+    with open(image_path, "rb") as image_file:
+        image_data = base64.b64encode(image_file.read()).decode('utf-8')
+    
+    # 调用人脸分析API
+    response = requests.post(
+        'https://api.ailabtools.com/v1/face-analysis',
+        headers={
+            'Authorization': f'Bearer {api_key}',
+            'Content-Type': 'application/json'
+        },
+        json={
+            'image': f'data:image/jpeg;base64,{image_data}'
+        }
+    )
+    
+    result = response.json()
+    
+    if result['error_code'] != 0:
+        raise Exception(result['error_detail']['message'])
+    
+    face_num = result['result']['face_num']
+    face_info = result['result']['face_info']
+    
+    # 验证人脸数量
+    if face_num == 0:
+        raise Exception('未检测到人脸，请确保图片包含清晰的人脸')
+    
+    if face_num > 1:
+        raise Exception('检测到多个人脸，请使用只包含一个人脸的图片')
+    
+    # 验证人脸角度和占比
+    face = face_info[0]
+    if face['face_angle'] > 30:
+        raise Exception('人脸角度过大，请使用正面或接近正面的照片')
+    
+    if face['face_proportion'] < 0.1:
+        raise Exception('人脸太小，请使用人脸占比更大的图片')
+    
+    return {
+        'is_valid': True,
+        'face_info': face
+    }
+
+# 使用示例
+api_key = 'YOUR_API_KEY'
+image_path = 'test_image.jpg'
+
+try:
+    validation = validate_image(image_path, api_key)
+    print('图片验证通过:', validation)
+except Exception as e:
+    print('图片验证失败:', str(e))
+```
+</Tab>
+
+<Tab title="cURL">
+```bash
+# 将图片转换为Base64
+IMAGE_BASE64=$(base64 -i test_image.jpg)
+
+# 调用人脸分析API
+curl -X POST https://api.ailabtools.com/v1/face-analysis \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"image\": \"data:image/jpeg;base64,$IMAGE_BASE64\"
+  }"
+
+# 验证脚本示例
+#!/bin/bash
+api_key="YOUR_API_KEY"
+image_path="test_image.jpg"
+
+# 获取Base64编码
+image_base64=$(base64 -i "$image_path")
+
+# 调用API
+response=$(curl -s -X POST https://api.ailabtools.com/v1/face-analysis \
+  -H "Authorization: Bearer $api_key" \
+  -H "Content-Type: application/json" \
+  -d "{\"image\": \"data:image/jpeg;base64,$image_base64\"}")
+
+# 解析结果
+face_num=$(echo $response | jq -r '.result.face_num')
+face_angle=$(echo $response | jq -r '.result.face_info[0].face_angle')
+face_proportion=$(echo $response | jq -r '.result.face_info[0].face_proportion')
+
+# 验证
+if [ "$face_num" = "0" ]; then
+  echo "错误: 未检测到人脸"
+  exit 1
+elif [ "$face_num" != "1" ]; then
+  echo "错误: 检测到多个人脸"
+  exit 1
+fi
+
+if (( $(echo "$face_angle > 30" | bc -l) )); then
+  echo "错误: 人脸角度过大"
+  exit 1
+fi
+
+if (( $(echo "$face_proportion < 0.1" | bc -l) )); then
+  echo "错误: 人脸占比过小"
+  exit 1
+fi
+
+echo "图片验证通过"
+```
+</Tab>
+</Tabs>
+
+<Note>
+此API主要用于前端验证，建议在调用发型编辑API之前先进行人脸分析验证，以提高成功率。
+</Note>
