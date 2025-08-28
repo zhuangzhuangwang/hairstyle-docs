@@ -4,61 +4,84 @@
 
 ## 配置概述
 
-根据Mintlify的文档和实际测试，我们采用了MDX API页面配置方式，这是目前最稳定和可靠的配置方法：
+根据[Mintlify OpenAPI Setup文档](https://mintlify.com/docs/api-playground/openapi-setup)，我们使用了正确的配置方式来启用API的"Try It"功能：
 
 ### 1. 主要配置文件
 
 #### `mint.json`
 - **Mintlify主配置**: 使用标准的Mintlify配置文件
-- **导航结构**: 定义文档的导航和分组
-- **基础设置**: 品牌、颜色、链接等配置
+- **OpenAPI引用**: 通过`openapi`属性引用OpenAPI规范文件
+- **自动生成API页面**: Mintlify会根据OpenAPI规范自动生成所有API页面
 
-#### API文档文件
-每个API文档文件（如`hairstyle-editor-pro.mdx`）都包含：
-- **API端点定义**: 使用`api: "POST /endpoint"`格式
-- **参数定义**: 使用`<Field>`组件定义参数
-- **示例代码**: 多种编程语言的调用示例
-- **详细说明**: 参数要求、错误处理等
+#### `openapi.json`
+- **OpenAPI规范**: 包含所有API端点的完整定义
+- **认证配置**: 定义了Bearer Token认证方式
+- **服务器配置**: 指定了API的基础URL
+- **参数定义**: 详细的请求参数和响应参数说明
 
 ## 配置详解
 
-### API端点配置
+### OpenAPI规范配置
 
-```yaml
----
-title: 发型编辑Pro
-api: "POST /hairstyle-editor-pro"
-description: 编辑人像图片中的发型和颜色
----
+```json
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "AILabTools API",
+    "version": "1.0.0",
+    "description": "基于稳定扩散模型的发型编辑Pro功能API"
+  },
+  "servers": [
+    {
+      "url": "https://api.ailabtools.com/v1",
+      "description": "生产环境"
+    }
+  ]
+}
+```
+
+### 认证配置
+
+```json
+{
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}
 ```
 
 这个配置：
-- 定义了API端点路径
-- 指定了HTTP方法
-- 提供了API描述
-- 启用了Try It功能
+- 定义了Bearer Token认证方式
+- 应用到所有API端点
+- 自动在Try It界面添加认证字段
 
-### 参数定义
+### 导航配置
 
-```mdx
-<Field name="image" type="string" required>
-Base64编码的图片数据，支持PNG、JPG、JPEG格式
-</Field>
-
-<Field name="hairstyle" type="string">
-发型类型，详见下方发型选项
-</Field>
-
-<Field name="hair_color" type="string">
-发色，详见下方颜色选项
-</Field>
+```json
+{
+  "navigation": [
+    {
+      "group": "API参考",
+      "openapi": "openapi.json"
+    }
+  ]
+}
 ```
 
-这个配置：
-- 使用`<Field>`组件定义参数
-- 指定参数名称、类型和是否必需
-- 提供参数描述
-- 自动生成参数录入框
+这个配置告诉Mintlify：
+- 自动从OpenAPI规范生成API页面
+- 为每个端点创建交互式Playground
+- 生成参数录入框和示例代码
 
 ## 异步API配置
 
@@ -69,26 +92,47 @@ Base64编码的图片数据，支持PNG、JPG、JPEG格式
 2. **查询结果**: 使用`task_id`查询处理结果
 3. **状态轮询**: 定期查询直到任务完成
 
-### MDX中的异步API定义
+### OpenAPI中的异步API定义
 
-```mdx
----
-title: 异步任务查询
-api: "GET /async-task-results"
-description: 查询异步任务的处理结果
----
-
-<Field name="task_id" type="string" required>
-异步任务ID，从其他API响应中获取
-</Field>
+```json
+{
+  "/hairstyle-editor-pro": {
+    "post": {
+      "summary": "发型编辑Pro",
+      "description": "基于稳定扩散模型，智能编辑人像图片中的发型和颜色",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HairstyleEditorRequest"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "请求成功",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HairstyleEditorResponse"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 ```
 
 ## Try It 功能特性
 
 ### 1. 自动生成的参数录入框
-- 基于`<Field>`组件自动生成
+- 基于OpenAPI规范自动生成
 - 支持必填参数验证
-- 提供参数描述和类型检查
+- 提供参数描述和示例值
 
 ### 2. 交互式API测试
 - 实时发送API请求
@@ -96,7 +140,7 @@ description: 查询异步任务的处理结果
 - 支持错误处理
 
 ### 3. 多语言示例代码
-- 提供curl、Python、JavaScript示例
+- 自动生成curl、Python、JavaScript示例
 - 包含正确的参数格式
 - 提供完整的请求示例
 
@@ -104,6 +148,11 @@ description: 查询异步任务的处理结果
 - 正确处理异步API的请求/响应
 - 提供任务ID查询功能
 - 支持状态轮询说明
+
+### 5. 认证支持
+- 自动添加Bearer Token认证字段
+- 支持API密钥输入
+- 安全的认证处理
 
 ## 使用指南
 
@@ -127,16 +176,15 @@ description: 查询异步任务的处理结果
 
 ### 对于文档维护者
 
-1. **更新API文档**
-   - 修改对应的MDX文件
+1. **更新API定义**
+   - 修改`openapi.json`文件
    - 更新参数定义和响应格式
-   - 确保`<Field>`组件配置正确
+   - 确保OpenAPI规范有效
 
 2. **添加新的API端点**
-   - 创建新的MDX文件
-   - 使用正确的frontmatter格式
-   - 定义`<Field>`组件参数
-   - 在`mint.json`的导航中添加新页面
+   - 在OpenAPI规范中添加新的路径
+   - 定义请求和响应模式
+   - Mintlify会自动生成页面
 
 3. **测试配置**
    - 验证Try It功能正常工作
@@ -154,66 +202,87 @@ description: 查询异步任务的处理结果
   "navigation": [
     {
       "group": "API参考",
-      "pages": [
-        "api-reference/overview",
-        "api-reference/hairstyle-editor-pro",
-        "api-reference/async-task-results",
-        "api-reference/face-analysis"
-      ]
+      "openapi": "openapi.json"
     }
   ]
 }
 ```
 
-### API页面的MDX配置
+### 异步API的OpenAPI定义
 
-```mdx
----
-title: 发型编辑Pro
-api: "POST /hairstyle-editor-pro"
-description: 编辑人像图片中的发型和颜色
----
-
-# 发型编辑Pro
-
-<Field name="image" type="string" required>
-Base64编码的图片数据，支持PNG、JPG、JPEG格式
-</Field>
-
-<Field name="hairstyle" type="string">
-发型类型，详见下方发型选项
-</Field>
-
-<Field name="hair_color" type="string">
-发色，详见下方颜色选项
-</Field>
+```json
+{
+  "paths": {
+    "/hairstyle-editor-pro": {
+      "post": {
+        "summary": "发型编辑Pro",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HairstyleEditorRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HairstyleEditorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 ```
 
 ## 常见问题
 
 ### Q: Try It功能无法正常工作？
 A: 检查以下配置：
-- MDX文件中的`api`字段格式是否正确
-- `<Field>`组件是否正确定义
-- 参数类型和必需性是否正确设置
+- OpenAPI规范文件是否有效
+- `mint.json`中的`openapi`引用是否正确
+- 服务器URL是否正确配置
 
 ### Q: 如何添加新的API端点？
 A: 按以下步骤操作：
-1. 创建新的MDX文件
-2. 使用正确的frontmatter格式
-3. 使用`<Field>`组件定义参数
-4. 在`mint.json`的导航中添加新页面
+1. 在`openapi.json`中添加新的路径定义
+2. 定义请求和响应模式
+3. Mintlify会自动生成对应的页面
 
 ### Q: 如何配置API认证？
-A: 当前配置中，用户需要手动添加Authorization头：
-- 格式：`Bearer YOUR_API_KEY`
-- 在API调用时手动设置
+A: 在OpenAPI规范中添加安全定义：
+```json
+{
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}
+```
 
 ### Q: 参数录入框没有显示？
 A: 确保：
-- 使用了`<Field>`组件而不是表格
-- 参数类型和名称正确
-- MDX文件的frontmatter格式正确
+- OpenAPI规范中的参数定义正确
+- 使用了正确的数据类型和格式
+- 服务器URL配置正确
 
 ### Q: 如何处理异步API？
 A: 异步API需要：
@@ -224,31 +293,31 @@ A: 异步API需要：
 
 ## 最佳实践
 
-1. **保持配置一致性**
-   - 所有API文档使用相同的格式
-   - 参数定义清晰明确
-   - 示例代码准确
+1. **保持OpenAPI规范更新**
+   - 及时更新API定义
+   - 确保参数和响应格式准确
+   - 提供完整的示例数据
 
-2. **提供详细说明**
-   - 为每个参数提供清晰的描述
-   - 包含使用示例和注意事项
-   - 说明参数格式要求
-
-3. **异步API文档**
+2. **异步API文档**
    - 清楚说明异步处理流程
    - 提供轮询示例代码
    - 说明错误处理方式
 
+3. **参数验证**
+   - 使用枚举值限制选项
+   - 提供清晰的参数描述
+   - 包含格式要求说明
+
 4. **错误处理**
-   - 提供完整的错误码说明
+   - 定义完整的错误响应
+   - 提供错误码说明
    - 包含错误处理示例
-   - 说明常见问题解决方案
 
 ## 技术支持
 
 如果您在使用过程中遇到问题，请：
-1. 查看[Mintlify官方文档](https://mintlify.com/docs)
-2. 检查配置文件的语法正确性
+1. 查看[Mintlify OpenAPI Setup文档](https://mintlify.com/docs/api-playground/openapi-setup)
+2. 验证OpenAPI规范的有效性
 3. 联系技术支持团队
 
 ---
