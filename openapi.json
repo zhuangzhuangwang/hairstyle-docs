@@ -5,9 +5,7 @@
     "description": "Hairstyle Changer Pro 与异步查询接口",
     "version": "1.0.0"
   },
-  "servers": [
-    { "url": "https://www.ailabapi.com" }
-  ],
+  "servers": [ { "url": "https://www.ailabapi.com" } ],
   "security": [ { "apiKeyAuth": [] } ],
   "components": {
     "securitySchemes": {
@@ -18,12 +16,26 @@
         "type": "object",
         "required": ["task_type", "auto", "image", "hair_style"],
         "properties": {
-          "task_type": { "type": "string", "description": "任务类型，固定 async" },
-          "auto": { "type": "integer", "description": "模式，固定 1" },
-          "image": { "type": "string", "format": "binary", "description": "上传的人像图片文件（PNG/JPG/JPEG）" },
-          "hair_style": { "type": "string", "description": "发型，参考官方枚举" },
-          "color": { "type": "string", "nullable": true, "description": "发色，可选" },
-          "image_size": { "type": "integer", "nullable": true, "description": "返回图片张数(1-4)，默认1" }
+          "task_type": { "type": "string", "enum": ["async"], "description": "Task Type. async: Asynchronous tasks." },
+          "auto": { "type": "integer", "enum": [1], "description": "Mode. 1: Automatic mode." },
+          "image": { "type": "string", "format": "binary", "description": "Main image file (PNG/JPG/JPEG). ≤3MB, 200x200~1999x1999." },
+          "hair_style": {
+            "type": "string",
+            "description": "Hairstyle. See docs for categories.",
+            "enum": [
+              "BuzzCut","UnderCut","Pompadour","SlickBack","CurlyShag","WavyShag","FauxHawk","Spiky","CombOver","HighTightFade","ManBun","Afro","LowFade","UndercutLongHair","TwoBlockHaircut","TexturedFringe","BluntBowlCut","LongWavyCurtainBangs","MessyTousled","CornrowBraids","LongHairTiedUp","Middle-parted",
+              "ShortPixieWithShavedSides","ShortNeatBob","DoubleBun","Updo","Spiked","bowlCut","Chignon","PixieCut","SlickedBack","LongCurly","CurlyBob","StackedCurlsInShortBob","SidePartCombOverHairstyleWithHighFade","WavyFrenchBobVibesfrom1920","BobCut","ShortTwintails","ShortCurlyPixie","LongStraight","LongWavy","FishtailBraid","TwinBraids","Ponytail","Dreadlocks","Cornrows","ShoulderLengthHair","LooseCurlyAfro","LongTwintails","LongHimeCut","BoxBraids"
+            ]
+          },
+          "color": {
+            "type": "string",
+            "nullable": true,
+            "description": "Color (optional).",
+            "enum": [
+              "blonde","platinumBlonde","brown","lightBrown","blue","lightBlue","purple","lightPurple","pink","black","white","grey","silver","red","orange","green","gradient","multicolored","darkBlue","burgundy","darkGreen"
+            ]
+          },
+          "image_size": { "type": "integer", "nullable": true, "enum": [1,2,3,4], "description": "Returns the number of images. Default 1." }
         }
       },
       "HairstyleEditorResponse": {
@@ -60,13 +72,8 @@
               "message": { "type": "string", "nullable": true }
             }
           },
-          "task_status": { "type": "integer", "description": "0:排队 1:处理中 2:成功" },
-          "data": {
-            "type": "object",
-            "properties": {
-              "images": { "type": "array", "items": { "type": "string", "format": "uri" } }
-            }
-          }
+          "task_status": { "type": "integer", "description": "0: queued, 1: processing, 2: success", "enum": [0,1,2] },
+          "data": { "type": "object", "properties": { "images": { "type": "array", "items": { "type": "string", "format": "uri" } } } }
         }
       },
       "Error": {
@@ -82,14 +89,10 @@
     "/api/portrait/effects/hairstyle-editor-pro": {
       "post": {
         "summary": "Hairstyle Changer Pro",
-        "description": "根据官方文档，使用 multipart/form-data 提交文件与表单字段。",
+        "description": "Use multipart/form-data per official docs.",
         "requestBody": {
           "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": { "$ref": "#/components/schemas/HairstyleEditorForm" }
-            }
-          }
+          "content": { "multipart/form-data": { "schema": { "$ref": "#/components/schemas/HairstyleEditorForm" } } }
         },
         "responses": {
           "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/HairstyleEditorResponse" } } } },
@@ -99,10 +102,8 @@
     },
     "/api/ai/common/async-task-results": {
       "get": {
-        "summary": "查询异步任务结果",
-        "parameters": [
-          { "name": "task_id", "in": "query", "required": true, "schema": { "type": "string" }, "description": "异步任务ID" }
-        ],
+        "summary": "Query Async Task Results",
+        "parameters": [ { "name": "task_id", "in": "query", "required": true, "schema": { "type": "string" }, "description": "Async task id" } ],
         "responses": {
           "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AsyncTaskResultsResponse" } } } },
           "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
