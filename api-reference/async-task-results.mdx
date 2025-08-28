@@ -2,6 +2,153 @@
 title: 异步任务查询
 api: "GET /api/async-task-results"
 description: 查询异步任务的处理结果
+openapi: "3.0.0"
+servers:
+  - url: "https://api.ailabtools.com/v1"
+    description: "生产环境"
+info:
+  title: "AILabTools API"
+  version: "1.0.0"
+  description: "基于稳定扩散模型的发型编辑Pro功能API"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "请输入您的API密钥，格式为 sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  schemas:
+    AsyncTaskResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          description: "请求ID"
+          example: "req_123456789"
+        log_id:
+          type: string
+          description: "日志ID"
+          example: "log_987654321"
+        error_code:
+          type: integer
+          description: "错误码，0表示成功"
+          example: 0
+        result:
+          type: object
+          properties:
+            task_id:
+              type: string
+              description: "异步任务ID"
+              example: "task_abcdef123456"
+            status:
+              type: string
+              enum: ["pending", "processing", "completed", "failed"]
+              description: "任务状态"
+              example: "completed"
+            result_image:
+              type: string
+              format: byte
+              description: "处理结果图片（Base64编码）"
+              example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
+paths:
+  /async-task-results:
+    get:
+      summary: "异步任务查询"
+      description: "查询异步任务的处理结果，获取最终的图片处理结果"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: task_id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "异步任务ID，从其他API响应中获取"
+          example: "task_abcdef123456"
+      responses:
+        "200":
+          description: "请求成功"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AsyncTaskResponse"
+              examples:
+                completed:
+                  summary: "任务完成"
+                  value:
+                    request_id: "req_123456789"
+                    log_id: "log_987654321"
+                    error_code: 0
+                    result:
+                      task_id: "task_abcdef123456"
+                      status: "completed"
+                      result_image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
+                processing:
+                  summary: "任务处理中"
+                  value:
+                    request_id: "req_123456789"
+                    log_id: "log_987654321"
+                    error_code: 0
+                    result:
+                      task_id: "task_abcdef123456"
+                      status: "processing"
+                failed:
+                  summary: "任务失败"
+                  value:
+                    request_id: "req_123456789"
+                    log_id: "log_987654321"
+                    error_code: 0
+                    result:
+                      task_id: "task_abcdef123456"
+                      status: "failed"
+        "400":
+          description: "请求参数错误"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: integer
+                    example: 1001
+                  error_detail:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "task_id参数缺失"
+        "401":
+          description: "认证失败"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: integer
+                    example: 2001
+                  error_detail:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "API密钥无效或已过期"
+        "404":
+          description: "任务不存在"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: integer
+                    example: 2001
+                  error_detail:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "任务不存在或已过期"
 ---
 
 # 异步任务查询

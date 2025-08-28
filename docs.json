@@ -92,5 +92,21 @@
       "apiKey": "YOUR_POSTHOG_API_KEY"
     }
   },
-  "cname": "docs.ailabtools.com"
+  "cname": "docs.ailabtools.com",
+  "api": {
+    "baseUrl": "https://api.ailabtools.com/v1",
+    "auth": {
+      "type": "bearer",
+      "name": "Authorization",
+      "description": "请输入您的API密钥，格式为 sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    "tryIt": {
+      "enabled": true,
+      "defaultValues": {
+        "hairstyle": "short",
+        "hair_color": "black"
+      }
+    },
+    "spec": "api-reference/openapi.yaml"
+  }
 }
