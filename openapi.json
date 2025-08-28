@@ -6,74 +6,33 @@
     "version": "1.0.0"
   },
   "servers": [
-    {
-      "url": "https://api.ailabtools.com/v1"
-    }
+    { "url": "https://api.ailabtools.com/v1" }
   ],
-  "security": [
-    {
-      "apiKeyAuth": []
-    }
-  ],
+  "security": [ { "apiKeyAuth": [] } ],
   "components": {
     "securitySchemes": {
-      "apiKeyAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "ailabapi-api-key"
-      }
+      "apiKeyAuth": { "type": "apiKey", "in": "header", "name": "ailabapi-api-key" }
     },
     "schemas": {
-      "HairstyleEditorRequest": {
+      "HairstyleEditorForm": {
         "type": "object",
         "required": ["image"],
         "properties": {
-          "image": {
-            "type": "string",
-            "format": "byte",
-            "description": "Base64编码的图片数据，支持PNG、JPG、JPEG格式",
-            "example": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
-          },
-          "hairstyle": {
-            "type": "string",
-            "enum": ["short", "medium", "long", "buzzcut", "pompadour", "quiff", "slicked_back", "textured_crop", "bob", "pixie", "layered", "curly", "straight"],
-            "description": "发型类型",
-            "example": "short"
-          },
-          "hair_color": {
-            "type": "string",
-            "enum": ["black", "brown", "blonde", "red", "gray", "white", "auburn", "chestnut"],
-            "description": "发色",
-            "example": "black"
-          }
+          "image": { "type": "string", "format": "binary", "description": "上传的人像图片文件（PNG/JPG/JPEG）" },
+          "hairstyle": { "type": "string", "description": "发型类型，可选" },
+          "hair_color": { "type": "string", "description": "发色，可选" }
         }
       },
       "HairstyleEditorResponse": {
         "type": "object",
         "properties": {
-          "request_id": {
-            "type": "string",
-            "description": "请求ID",
-            "example": "req_123456789"
-          },
-          "log_id": {
-            "type": "string",
-            "description": "日志ID",
-            "example": "log_987654321"
-          },
-          "error_code": {
-            "type": "integer",
-            "description": "错误码，0表示成功",
-            "example": 0
-          },
+          "request_id": { "type": "string", "example": "req_123456789" },
+          "log_id": { "type": "string", "example": "log_987654321" },
+          "error_code": { "type": "integer", "example": 0 },
           "result": {
             "type": "object",
             "properties": {
-              "task_id": {
-                "type": "string",
-                "description": "异步任务ID，用于查询处理结果",
-                "example": "task_abcdef123456"
-              }
+              "task_id": { "type": "string", "example": "task_abcdef123456" }
             }
           }
         }
@@ -81,128 +40,53 @@
       "AsyncTaskResponse": {
         "type": "object",
         "properties": {
-          "request_id": {
-            "type": "string",
-            "description": "请求ID",
-            "example": "req_123456789"
-          },
-          "log_id": {
-            "type": "string",
-            "description": "日志ID",
-            "example": "log_987654321"
-          },
-          "error_code": {
-            "type": "integer",
-            "description": "错误码，0表示成功",
-            "example": 0
-          },
+          "request_id": { "type": "string" },
+          "log_id": { "type": "string" },
+          "error_code": { "type": "integer", "example": 0 },
           "result": {
             "type": "object",
             "properties": {
-              "task_id": {
-                "type": "string",
-                "description": "异步任务ID",
-                "example": "task_abcdef123456"
-              },
-              "status": {
-                "type": "string",
-                "enum": ["pending", "processing", "completed", "failed"],
-                "description": "任务状态",
-                "example": "completed"
-              },
-              "result_image": {
-                "type": "string",
-                "format": "byte",
-                "description": "处理结果图片（Base64编码）",
-                "example": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
-              }
+              "task_id": { "type": "string" },
+              "status": { "type": "string", "enum": ["pending", "processing", "completed", "failed"] },
+              "result_image": { "type": "string", "format": "byte" }
             }
           }
         }
       },
-      "FaceAnalysisRequest": {
+      "FaceAnalysisForm": {
         "type": "object",
         "required": ["image"],
         "properties": {
-          "image": {
-            "type": "string",
-            "format": "byte",
-            "description": "Base64编码的图片数据，支持PNG、JPG、JPEG格式",
-            "example": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
-          }
+          "image": { "type": "string", "format": "binary", "description": "上传的人像图片文件（PNG/JPG/JPEG）" }
         }
       },
       "FaceAnalysisResponse": {
         "type": "object",
         "properties": {
-          "request_id": {
-            "type": "string",
-            "description": "请求ID",
-            "example": "req_123456789"
-          },
-          "log_id": {
-            "type": "string",
-            "description": "日志ID",
-            "example": "log_987654321"
-          },
-          "error_code": {
-            "type": "integer",
-            "description": "错误码，0表示成功",
-            "example": 0
-          },
+          "request_id": { "type": "string" },
+          "log_id": { "type": "string" },
+          "error_code": { "type": "integer", "example": 0 },
           "result": {
             "type": "object",
             "properties": {
-              "face_num": {
-                "type": "integer",
-                "description": "检测到的人脸数量",
-                "example": 1
-              },
+              "face_num": { "type": "integer", "example": 1 },
               "face_info": {
                 "type": "array",
                 "items": {
                   "type": "object",
                   "properties": {
-                    "face_id": {
-                      "type": "string",
-                      "description": "人脸ID",
-                      "example": "face_001"
-                    },
+                    "face_id": { "type": "string" },
                     "face_rect": {
                       "type": "object",
                       "properties": {
-                        "x": {
-                          "type": "integer",
-                          "description": "人脸左上角X坐标",
-                          "example": 100
-                        },
-                        "y": {
-                          "type": "integer",
-                          "description": "人脸左上角Y坐标",
-                          "example": 50
-                        },
-                        "width": {
-                          "type": "integer",
-                          "description": "人脸宽度",
-                          "example": 200
-                        },
-                        "height": {
-                          "type": "integer",
-                          "description": "人脸高度",
-                          "example": 250
-                        }
+                        "x": { "type": "integer" },
+                        "y": { "type": "integer" },
+                        "width": { "type": "integer" },
+                        "height": { "type": "integer" }
                       }
                     },
-                    "face_angle": {
-                      "type": "number",
-                      "description": "人脸角度（度）",
-                      "example": 15
-                    },
-                    "face_proportion": {
-                      "type": "number",
-                      "description": "人脸在图片中的占比（0-1）",
-                      "example": 0.25
-                    }
+                    "face_angle": { "type": "number" },
+                    "face_proportion": { "type": "number" }
                   }
                 }
               }
@@ -213,19 +97,8 @@
       "Error": {
         "type": "object",
         "properties": {
-          "error_code": {
-            "type": "integer",
-            "example": 1001
-          },
-          "error_detail": {
-            "type": "object",
-            "properties": {
-              "message": {
-                "type": "string",
-                "example": "请求参数无效"
-              }
-            }
-          }
+          "error_code": { "type": "integer" },
+          "error_detail": { "type": "object", "properties": { "message": { "type": "string" } } }
         }
       }
     }
@@ -238,34 +111,14 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HairstyleEditorRequest"
-              }
+            "multipart/form-data": {
+              "schema": { "$ref": "#/components/schemas/HairstyleEditorForm" }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "请求成功",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HairstyleEditorResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "请求参数错误",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
+          "200": { "description": "请求成功", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/HairstyleEditorResponse" } } } },
+          "400": { "description": "请求参数错误", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
         }
       }
     },
@@ -274,38 +127,11 @@
         "summary": "异步任务查询",
         "description": "查询异步任务的处理结果，获取最终的图片处理结果",
         "parameters": [
-          {
-            "name": "task_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "异步任务ID，从其他API响应中获取",
-            "example": "task_abcdef123456"
-          }
+          { "name": "task_id", "in": "query", "required": true, "schema": { "type": "string" }, "description": "异步任务ID" }
         ],
         "responses": {
-          "200": {
-            "description": "请求成功",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AsyncTaskResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "请求参数错误",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
+          "200": { "description": "请求成功", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AsyncTaskResponse" } } } },
+          "400": { "description": "请求参数错误", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
         }
       }
     },
@@ -316,34 +142,14 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FaceAnalysisRequest"
-              }
+            "multipart/form-data": {
+              "schema": { "$ref": "#/components/schemas/FaceAnalysisForm" }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "请求成功",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FaceAnalysisResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "请求参数错误",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
+          "200": { "description": "请求成功", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FaceAnalysisResponse" } } } },
+          "400": { "description": "请求参数错误", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
         }
       }
     }
