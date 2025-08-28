@@ -76,6 +76,64 @@
           "data": { "type": "object", "properties": { "images": { "type": "array", "items": { "type": "string", "format": "uri" } } } }
         }
       },
+      "FaceAnalysisForm": {
+        "type": "object",
+        "required": ["image"],
+        "properties": {
+          "image": { 
+            "type": "string", 
+            "format": "binary", 
+            "description": "Image file for face analysis (PNG/JPG/JPEG). ≤3MB, 200x200~1999x1999." 
+          }
+        }
+      },
+      "FaceAnalysisResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": { "type": "string", "description": "Request ID" },
+          "log_id": { "type": "string", "description": "Log ID" },
+          "error_code": { "type": "integer", "description": "Error code, 0 means success" },
+          "error_msg": { "type": "string", "nullable": true, "description": "Error message" },
+          "error_detail": {
+            "type": "object",
+            "properties": {
+              "status_code": { "type": "integer" },
+              "code": { "type": "string", "nullable": true },
+              "code_message": { "type": "string", "nullable": true },
+              "message": { "type": "string", "nullable": true }
+            }
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "face_num": { 
+                "type": "integer", 
+                "description": "Number of faces detected" 
+              },
+              "face_info": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "face_id": { "type": "string", "description": "Face ID" },
+                    "face_rect": {
+                      "type": "object",
+                      "properties": {
+                        "x": { "type": "integer", "description": "Face top-left X coordinate" },
+                        "y": { "type": "integer", "description": "Face top-left Y coordinate" },
+                        "width": { "type": "integer", "description": "Face width" },
+                        "height": { "type": "integer", "description": "Face height" }
+                      }
+                    },
+                    "face_angle": { "type": "number", "description": "Face angle (degrees)" },
+                    "face_proportion": { "type": "number", "description": "Face proportion in image (0-1)" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "Error": {
         "type": "object",
         "properties": {
@@ -100,12 +158,39 @@
         }
       }
     },
-    "/api/ai/common/async-task-results": {
+    "/api/common/query-async-task-result": {
       "get": {
         "summary": "Query Async Task Results",
-        "parameters": [ { "name": "task_id", "in": "query", "required": true, "schema": { "type": "string" }, "description": "Async task id" } ],
+        "description": "For asynchronous interface, after calling the API, the returned result is not the real request result, you need to save the task_id in the returned result and then call this interface to get the real request result.",
+        "parameters": [ 
+          { 
+            "name": "task_id", 
+            "in": "query", 
+            "required": true, 
+            "schema": { "type": "string" }, 
+            "description": "The task_id returned by the asynchronous API." 
+          } 
+        ],
         "responses": {
           "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AsyncTaskResultsResponse" } } } },
+          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/portrait/analysis/face-analysis": {
+      "post": {
+        "summary": "Face Analysis",
+        "description": "Analyze face information in images, including face count, position, angle, etc., for frontend validation before hairstyle processing",
+        "requestBody": {
+          "required": true,
+          "content": { 
+            "multipart/form-data": { 
+              "schema": { "$ref": "#/components/schemas/FaceAnalysisForm" } 
+            } 
+          }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FaceAnalysisResponse" } } } },
           "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
         }
       }
