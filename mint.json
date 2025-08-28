@@ -40,6 +40,12 @@
         "api-reference/endpoint/async-task-results",
         "api-reference/endpoint/face-analysis"
       ]
+    },
+    {
+      "group": "示例展示",
+      "pages": [
+        "hairstyle-examples"
+      ]
     }
   ],
   "logo": {
