@@ -1,7 +1,8 @@
 ---
 title: "异步任务查询"
 description: "查询异步任务的处理结果，获取最终的图片处理结果"
-openapi: "openapi.json GET /async-task-results"
+api: "GET /async-task-results"
+baseUrl: "https://api.ailabtools.com/v1"
 ---
 
 # 异步任务查询
@@ -11,6 +12,23 @@ openapi: "openapi.json GET /async-task-results"
 <Tip>
 对于异步接口，调用API后返回的结果不是真实的请求结果，您需要保存返回结果中的`task_id`，然后调用此接口获取真实的请求结果。
 </Tip>
+
+## 请求参数
+
+<Field name="task_id" type="string" required>
+异步任务ID，从其他API响应中获取
+</Field>
+
+## 响应参数
+
+| 字段 | 类型 | 描述 |
+|------|------|------|
+| `request_id` | string | 请求ID |
+| `log_id` | string | 日志ID |
+| `error_code` | number | 错误码，0表示成功 |
+| `result.task_id` | string | 异步任务ID |
+| `result.status` | string | 任务状态 |
+| `result.result_image` | string | 处理结果图片（Base64编码） |
 
 ## 任务状态
 

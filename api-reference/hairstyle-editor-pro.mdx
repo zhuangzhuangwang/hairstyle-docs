@@ -1,12 +1,27 @@
 ---
 title: "发型编辑Pro"
 description: "基于稳定扩散模型，智能编辑人像图片中的发型和颜色"
-openapi: "openapi.json POST /hairstyle-editor-pro"
+api: "POST /hairstyle-editor-pro"
+baseUrl: "https://api.ailabtools.com/v1"
 ---
 
 # 发型编辑Pro
 
 基于稳定扩散模型，智能编辑人像图片中的发型和颜色。
+
+## 请求参数
+
+<Field name="image" type="string" required>
+Base64编码的图片数据，支持PNG、JPG、JPEG格式
+</Field>
+
+<Field name="hairstyle" type="string">
+发型类型，详见下方发型选项
+</Field>
+
+<Field name="hair_color" type="string">
+发色，详见下方颜色选项
+</Field>
 
 ## 图片要求
 
@@ -54,6 +69,15 @@ openapi: "openapi.json POST /hairstyle-editor-pro"
 - `white` - 白色
 - `auburn` - 红褐色
 - `chestnut` - 栗色
+
+## 响应参数
+
+| 字段 | 类型 | 描述 |
+|------|------|------|
+| `request_id` | string | 请求ID |
+| `log_id` | string | 日志ID |
+| `error_code` | number | 错误码，0表示成功 |
+| `result.task_id` | string | 异步任务ID，用于查询处理结果 |
 
 ## 错误码
 

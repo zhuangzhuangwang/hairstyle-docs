@@ -1,12 +1,41 @@
 ---
 title: "人脸分析"
 description: "分析图片中的人脸信息，包括人脸数量、位置、角度等，用于前端验证"
-openapi: "openapi.json POST /face-analysis"
+api: "POST /face-analysis"
+baseUrl: "https://api.ailabtools.com/v1"
 ---
 
 # 人脸分析
 
 分析图片中的人脸信息，包括人脸数量、位置、角度等，用于前端验证。
+
+## 请求参数
+
+<Field name="image" type="string" required>
+Base64编码的图片数据，支持PNG、JPG、JPEG格式
+</Field>
+
+## 响应参数
+
+| 字段 | 类型 | 描述 |
+|------|------|------|
+| `request_id` | string | 请求ID |
+| `log_id` | string | 日志ID |
+| `error_code` | number | 错误码，0表示成功 |
+| `result.face_num` | number | 检测到的人脸数量 |
+| `result.face_info` | array | 人脸信息数组 |
+
+### 人脸信息字段
+
+| 字段 | 类型 | 描述 |
+|------|------|------|
+| `face_id` | string | 人脸ID |
+| `face_rect.x` | number | 人脸左上角X坐标 |
+| `face_rect.y` | number | 人脸左上角Y坐标 |
+| `face_rect.width` | number | 人脸宽度 |
+| `face_rect.height` | number | 人脸高度 |
+| `face_angle` | number | 人脸角度（度） |
+| `face_proportion` | number | 人脸在图片中的占比（0-1） |
 
 ## 验证标准
 
