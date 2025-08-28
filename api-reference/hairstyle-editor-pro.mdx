@@ -1,6 +1,6 @@
 ---
 title: 发型编辑Pro
-api: "POST /hairstyle-editor-pro"
+api: "POST https://api.ailabtools.com/v1/hairstyle-editor-pro"
 description: 编辑人像图片中的发型和颜色
 ---
 
@@ -10,17 +10,21 @@ description: 编辑人像图片中的发型和颜色
 
 ## 请求参数
 
-<Field name="image" type="string" required>
-Base64编码的图片数据，支持PNG、JPG、JPEG格式
-</Field>
+| 参数名 | 类型 | 必需 | 描述 |
+|--------|------|------|------|
+| `image` | string | 是 | Base64编码的图片数据，支持PNG、JPG、JPEG格式 |
+| `hairstyle` | string | 否 | 发型类型，详见下方发型选项 |
+| `hair_color` | string | 否 | 发色，详见下方颜色选项 |
 
-<Field name="hairstyle" type="string">
-发型类型，详见下方发型选项
-</Field>
-
-<Field name="hair_color" type="string">
-发色，详见下方颜色选项
-</Field>
+<RequestExample>
+```json
+{
+  "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ...",
+  "hairstyle": "short",
+  "hair_color": "black"
+}
+```
+</RequestExample>
 
 ### 图片要求
 
@@ -77,6 +81,19 @@ Base64编码的图片数据，支持PNG、JPG、JPEG格式
 | `log_id` | string | 日志ID |
 | `error_code` | number | 错误码，0表示成功 |
 | `result.task_id` | string | 异步任务ID，用于查询处理结果 |
+
+<ResponseExample>
+```json
+{
+  "request_id": "req_123456789",
+  "log_id": "log_987654321",
+  "error_code": 0,
+  "result": {
+    "task_id": "task_abcdef123456"
+  }
+}
+```
+</ResponseExample>
 
 <Note>
 这是一个异步API，返回的task_id需要用于查询最终的处理结果。
