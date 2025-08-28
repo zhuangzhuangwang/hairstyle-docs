@@ -1,0 +1,88 @@
+---
+title: API参考
+description: AILabTools API完整参考文档
+---
+
+# API参考
+
+## 基础信息
+
+<Note>
+所有API请求都需要在请求头中包含您的API密钥进行认证。
+</Note>
+
+### 基础URL
+```
+https://api.ailabtools.com/v1
+```
+
+### 认证方式
+所有API请求都需要在请求头中包含API密钥：
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+### 响应格式
+所有API响应都使用JSON格式，包含以下标准字段：
+
+| 字段 | 类型 | 描述 |
+|------|------|------|
+| `request_id` | string | 请求ID，用于问题定位 |
+| `log_id` | string | 日志ID |
+| `error_code` | number | 错误码，0表示成功 |
+| `error_detail` | object | 错误详情 |
+
+### 错误处理
+当API调用失败时，响应会包含错误信息：
+
+```json
+{
+  "request_id": "req_123456789",
+  "log_id": "log_987654321",
+  "error_code": 1001,
+  "error_detail": {
+    "status_code": 400,
+    "code": "INVALID_PARAMETER",
+    "code_message": "参数错误",
+    "message": "请求参数无效"
+  }
+}
+```
+
+## API端点
+
+<Grid cols={2}>
+<Card title="发型编辑Pro" href="/api/hairstyle-editor-pro">
+编辑人像图片中的发型和颜色
+</Card>
+
+<Card title="异步任务查询" href="/api/async-task-results">
+查询异步任务的处理结果
+</Card>
+
+<Card title="人脸分析" href="/api/face-analysis">
+分析图片中的人脸信息
+</Card>
+</Grid>
+
+## 状态码
+
+| 状态码 | 描述 |
+|--------|------|
+| 200 | 请求成功 |
+| 400 | 请求参数错误 |
+| 401 | 认证失败 |
+| 403 | 权限不足 |
+| 429 | 请求频率超限 |
+| 500 | 服务器内部错误 |
+
+## 速率限制
+
+- **免费用户**: 每分钟10次请求
+- **付费用户**: 每分钟100次请求
+- **企业用户**: 每分钟1000次请求
+
+<Note>
+超出速率限制时，API会返回429状态码。
+</Note>
