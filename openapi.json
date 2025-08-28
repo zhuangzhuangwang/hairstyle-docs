@@ -78,8 +78,14 @@
       },
       "FaceAnalysisForm": {
         "type": "object",
-        "required": ["image"],
+        "required": ["task_type", "image"],
         "properties": {
+          "task_type": {
+            "type": "string",
+            "enum": ["sync", "async"],
+            "description": "Task Type. sync: synchronous (recommended for validation); async: asynchronous.",
+            "default": "sync"
+          },
           "image": { 
             "type": "string", 
             "format": "binary", 
