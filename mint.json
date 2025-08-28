@@ -1,6 +1,5 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
   "name": "AILabTools API",
   "colors": {
     "primary": "#667eea",
@@ -8,112 +7,75 @@
     "dark": "#4c63d2"
   },
   "favicon": "/favicon.svg",
-  "navigation": {
-    "tabs": [
-      {
-        "tab": "开始使用",
-        "groups": [
-          {
-            "group": "快速开始",
-            "pages": [
-              "index",
-              "quickstart",
-              "essentials/authentication"
-            ]
-          },
-          {
-            "group": "开发指南",
-            "pages": [
-              "development",
-              "essentials/image-requirements",
-              "essentials/error-handling",
-              "essentials/best-practices"
-            ]
-          },
-          {
-            "group": "其他",
-            "pages": [
-              "essentials/errors",
-              "essentials/pricing"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API参考",
-        "groups": [
-          {
-            "group": "API文档",
-            "pages": [
-              "api-reference/overview"
-            ]
-          },
-          {
-            "group": "API端点",
-            "pages": [
-              "api-reference/endpoint/hairstyle-editor-pro",
-              "api-reference/endpoint/async-task-results",
-              "api-reference/endpoint/face-analysis"
-            ]
-          }
-        ]
-      }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "官网",
-          "href": "https://www.ailabtools.com",
-          "icon": "globe"
-        },
-        {
-          "anchor": "控制台",
-          "href": "https://console.ailabtools.com",
-          "icon": "settings"
-        },
-        {
-          "anchor": "GitHub",
-          "href": "https://github.com/ailabtools",
-          "icon": "github"
-        }
+  "navigation": [
+    {
+      "group": "开始使用",
+      "pages": [
+        "index",
+        "quickstart",
+        "essentials/authentication"
+      ]
+    },
+    {
+      "group": "开发指南",
+      "pages": [
+        "development",
+        "essentials/image-requirements",
+        "essentials/error-handling",
+        "essentials/best-practices"
+      ]
+    },
+    {
+      "group": "其他",
+      "pages": [
+        "essentials/errors",
+        "essentials/pricing"
+      ]
+    },
+    {
+      "group": "API参考",
+      "pages": [
+        "api-reference/overview",
+        "api-reference/endpoint/hairstyle-editor-pro",
+        "api-reference/endpoint/async-task-results",
+        "api-reference/endpoint/face-analysis"
       ]
     }
-  },
+  ],
   "logo": {
     "light": "/logo/logo-light.svg",
     "dark": "/logo/logo-dark.svg"
   },
-  "navbar": {
-    "links": [
-      {
-        "label": "联系我们",
-        "href": "mailto:support@ailabtools.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "获取API密钥",
-      "href": "https://www.ailabtools.com/account/signup"
+  "topbarLinks": [
+    {
+      "name": "官网",
+      "url": "https://www.ailabtools.com"
+    },
+    {
+      "name": "控制台",
+      "url": "https://console.ailabtools.com"
     }
+  ],
+  "topbarCtaButton": {
+    "name": "获取API密钥",
+    "url": "https://www.ailabtools.com/account/signup"
   },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://twitter.com/ailabtools",
-      "github": "https://github.com/ailabtools",
-      "linkedin": "https://linkedin.com/company/ailabtools"
+  "anchors": [
+    {
+      "name": "联系我们",
+      "icon": "headphones",
+      "url": "mailto:support@ailabtools.com"
+    },
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/ailabtools"
     }
+  ],
+  "footerSocials": {
+    "twitter": "https://twitter.com/ailabtools",
+    "github": "https://github.com/ailabtools",
+    "linkedin": "https://linkedin.com/company/ailabtools"
   },
   "cname": "docs.ailabtools.com"
 }
