@@ -1,11 +1,11 @@
 {
+  "$schema": "https://mintlify.com/schema.json",
   "name": "AILabTools API",
   "logo": {
     "dark": "/logo/logo-dark.svg",
     "light": "/logo/logo-light.svg"
   },
   "favicon": "/favicon.svg",
-  "theme": "mint",
   "colors": {
     "primary": "#667eea",
     "light": "#764ba2",
@@ -37,43 +37,41 @@
       "url": "https://github.com/ailabtools"
     }
   ],
-  "navigation": {
-    "groups": [
-      {
-        "group": "开始使用",
-        "pages": [
-          "index",
-          "quickstart",
-          "essentials/authentication"
-        ]
-      },
-      {
-        "group": "API参考",
-        "pages": [
-          "api-reference/overview",
-          "api-reference/hairstyle-editor-pro",
-          "api-reference/async-task-results",
-          "api-reference/face-analysis"
-        ]
-      },
-      {
-        "group": "开发指南",
-        "pages": [
-          "development",
-          "essentials/image-requirements",
-          "essentials/error-handling",
-          "essentials/best-practices"
-        ]
-      },
-      {
-        "group": "其他",
-        "pages": [
-          "essentials/errors",
-          "essentials/pricing"
-        ]
-      }
-    ]
-  },
+  "navigation": [
+    {
+      "group": "开始使用",
+      "pages": [
+        "index",
+        "quickstart",
+        "essentials/authentication"
+      ]
+    },
+    {
+      "group": "API参考",
+      "pages": [
+        "api-reference/overview",
+        "api-reference/hairstyle-editor-pro",
+        "api-reference/async-task-results",
+        "api-reference/face-analysis"
+      ]
+    },
+    {
+      "group": "开发指南",
+      "pages": [
+        "development",
+        "essentials/image-requirements",
+        "essentials/error-handling",
+        "essentials/best-practices"
+      ]
+    },
+    {
+      "group": "其他",
+      "pages": [
+        "essentials/errors",
+        "essentials/pricing"
+      ]
+    }
+  ],
   "footerSocials": {
     "twitter": "https://twitter.com/ailabtools",
     "github": "https://github.com/ailabtools",
@@ -97,16 +95,7 @@
     "baseUrl": "https://api.ailabtools.com/v1",
     "auth": {
       "type": "bearer",
-      "name": "Authorization",
-      "description": "请输入您的API密钥，格式为 sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    },
-    "tryIt": {
-      "enabled": true,
-      "defaultValues": {
-        "hairstyle": "short",
-        "hair_color": "black"
-      }
-    },
-    "spec": "api-reference/openapi.yaml"
+      "name": "Authorization"
+    }
   }
 }

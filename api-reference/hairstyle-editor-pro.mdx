@@ -1,161 +1,7 @@
 ---
 title: 发型编辑Pro
-api: "POST /api/hairstyle-editor-pro"
+api: "POST /hairstyle-editor-pro"
 description: 编辑人像图片中的发型和颜色
-openapi: "3.0.0"
-servers:
-  - url: "https://api.ailabtools.com/v1"
-    description: "生产环境"
-info:
-  title: "AILabTools API"
-  version: "1.0.0"
-  description: "基于稳定扩散模型的发型编辑Pro功能API"
-components:
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: "请输入您的API密钥，格式为 sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  schemas:
-    HairstyleEditorRequest:
-      type: object
-      required:
-        - image
-      properties:
-        image:
-          type: string
-          format: byte
-          description: "Base64编码的图片数据，支持PNG、JPG、JPEG格式"
-          example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
-        hairstyle:
-          type: string
-          enum: ["short", "medium", "long", "buzzcut", "pompadour", "quiff", "slicked_back", "textured_crop", "bob", "pixie", "layered", "curly", "straight"]
-          description: "发型类型"
-          example: "short"
-        hair_color:
-          type: string
-          enum: ["black", "brown", "blonde", "red", "gray", "white", "auburn", "chestnut"]
-          description: "发色"
-          example: "black"
-    HairstyleEditorResponse:
-      type: object
-      properties:
-        request_id:
-          type: string
-          description: "请求ID"
-          example: "req_123456789"
-        log_id:
-          type: string
-          description: "日志ID"
-          example: "log_987654321"
-        error_code:
-          type: integer
-          description: "错误码，0表示成功"
-          example: 0
-        result:
-          type: object
-          properties:
-            task_id:
-              type: string
-              description: "异步任务ID，用于查询处理结果"
-              example: "task_abcdef123456"
-paths:
-  /hairstyle-editor-pro:
-    post:
-      summary: "发型编辑Pro"
-      description: "基于稳定扩散模型，智能编辑人像图片中的发型和颜色"
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/HairstyleEditorRequest"
-            examples:
-              basic:
-                summary: "基础示例"
-                value:
-                  image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
-                  hairstyle: "short"
-                  hair_color: "black"
-              male_hairstyle:
-                summary: "男性发型示例"
-                value:
-                  image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
-                  hairstyle: "pompadour"
-                  hair_color: "brown"
-              female_hairstyle:
-                summary: "女性发型示例"
-                value:
-                  image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
-                  hairstyle: "bob"
-                  hair_color: "blonde"
-      responses:
-        "200":
-          description: "请求成功"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HairstyleEditorResponse"
-              examples:
-                success:
-                  summary: "成功响应"
-                  value:
-                    request_id: "req_123456789"
-                    log_id: "log_987654321"
-                    error_code: 0
-                    result:
-                      task_id: "task_abcdef123456"
-        "400":
-          description: "请求参数错误"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error_code:
-                    type: integer
-                    example: 1001
-                  error_detail:
-                    type: object
-                    properties:
-                      message:
-                        type: string
-                        example: "请求参数无效"
-        "401":
-          description: "认证失败"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error_code:
-                    type: integer
-                    example: 2001
-                  error_detail:
-                    type: object
-                    properties:
-                      message:
-                        type: string
-                        example: "API密钥无效或已过期"
-        "429":
-          description: "请求频率超限"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error_code:
-                    type: integer
-                    example: 4001
-                  error_detail:
-                    type: object
-                    properties:
-                      message:
-                        type: string
-                        example: "请求过于频繁，请稍后重试"
 ---
 
 # 发型编辑Pro
@@ -190,11 +36,17 @@ curl -X POST https://api.ailabtools.com/v1/hairstyle-editor-pro \
 
 ## 请求参数
 
-| 参数名 | 类型 | 必需 | 描述 |
-|--------|------|------|------|
-| `image` | string | 是 | Base64编码的图片数据，支持PNG、JPG、JPEG格式 |
-| `hairstyle` | string | 否 | 发型类型，详见下方发型选项 |
-| `hair_color` | string | 否 | 发色，详见下方颜色选项 |
+<Field name="image" type="string" required>
+Base64编码的图片数据，支持PNG、JPG、JPEG格式
+</Field>
+
+<Field name="hairstyle" type="string">
+发型类型，详见下方发型选项
+</Field>
+
+<Field name="hair_color" type="string">
+发色，详见下方颜色选项
+</Field>
 
 ### 图片要求
 

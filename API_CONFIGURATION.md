@@ -4,121 +4,99 @@
 
 ## 配置概述
 
-为了确保Mintlify的"Try It"功能正常工作，我们进行了以下配置：
+根据[Mintlify官方文档](https://mintlify.com/docs)，我们使用了正确的配置方式来启用API的"Try It"功能：
 
 ### 1. 主要配置文件
 
-#### `docs.json`
+#### `mint.json`
+- **Mintlify主配置**: 使用标准的Mintlify配置文件
 - **API基础配置**: 设置API基础URL和认证方式
-- **Try It配置**: 启用Try It功能并设置默认值
-- **OpenAPI规范引用**: 指向统一的OpenAPI规范文件
+- **导航结构**: 定义文档的导航和分组
 
-#### `api-reference/openapi.yaml`
-- **统一OpenAPI规范**: 包含所有API端点的完整定义
-- **认证方案**: Bearer Token认证配置
-- **请求/响应模式**: 详细的数据结构定义
-- **示例数据**: 多种场景的请求和响应示例
-
-### 2. 各API文档文件
-
+#### API文档文件
 每个API文档文件（如`hairstyle-editor-pro.mdx`）都包含：
-- **OpenAPI规范**: 在frontmatter中定义的完整OpenAPI配置
-- **认证要求**: 明确指定需要Bearer Token认证
-- **参数定义**: 详细的请求参数和响应参数说明
+- **API端点定义**: 使用`api: "POST /endpoint"`格式
+- **Field组件**: 使用`<Field>`组件定义参数
 - **示例代码**: 多种编程语言的调用示例
 
 ## 配置详解
 
-### API认证配置
+### API基础配置
 
-```yaml
-components:
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: "请输入您的API密钥，格式为 sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+```json
+{
+  "api": {
+    "baseUrl": "https://api.ailabtools.com/v1",
+    "auth": {
+      "type": "bearer",
+      "name": "Authorization"
+    }
+  }
+}
 ```
 
 这个配置告诉Mintlify：
+- API的基础URL是`https://api.ailabtools.com/v1`
 - 使用Bearer Token认证
-- 在Try It界面中显示API密钥输入框
-- 提供清晰的格式说明
+- 认证头名称为`Authorization`
 
-### 请求参数配置
-
-```yaml
-HairstyleEditorRequest:
-  type: object
-  required:
-    - image
-  properties:
-    image:
-      type: string
-      format: byte
-      description: "Base64编码的图片数据"
-    hairstyle:
-      type: string
-      enum: ["short", "medium", "long", ...]
-      description: "发型类型"
-    hair_color:
-      type: string
-      enum: ["black", "brown", "blonde", ...]
-      description: "发色"
-```
-
-这个配置确保：
-- 必填参数（image）被正确标记
-- 可选参数有明确的枚举值
-- 参数类型和格式被正确定义
-
-### 响应示例配置
+### API端点配置
 
 ```yaml
-responses:
-  "200":
-    description: "请求成功"
-    content:
-      application/json:
-        schema:
-          $ref: "#/components/schemas/HairstyleEditorResponse"
-        examples:
-          success:
-            summary: "成功响应"
-            value:
-              request_id: "req_123456789"
-              error_code: 0
-              result:
-                task_id: "task_abcdef123456"
+---
+title: 发型编辑Pro
+api: "POST /hairstyle-editor-pro"
+description: 编辑人像图片中的发型和颜色
+---
 ```
 
-这个配置提供：
-- 成功响应的示例
-- 错误响应的示例
-- 不同状态码的详细说明
+这个配置：
+- 定义了API端点路径
+- 指定了HTTP方法
+- 提供了API描述
+
+### 参数定义
+
+```mdx
+<Field name="image" type="string" required>
+Base64编码的图片数据，支持PNG、JPG、JPEG格式
+</Field>
+
+<Field name="hairstyle" type="string">
+发型类型，详见下方发型选项
+</Field>
+
+<Field name="hair_color" type="string">
+发色，详见下方颜色选项
+</Field>
+```
+
+这个配置：
+- 使用`<Field>`组件定义参数
+- 指定参数名称、类型和是否必需
+- 提供参数描述
 
 ## Try It 功能特性
 
 ### 1. API密钥管理
 - 用户可以在Try It界面中输入API密钥
-- 密钥格式验证和提示
+- 自动添加Bearer前缀
 - 安全的密钥存储（仅在浏览器中）
 
 ### 2. 参数输入
 - 自动生成表单字段
 - 必填参数验证
-- 枚举值下拉选择
-- 文件上传支持（Base64编码）
+- 文本输入支持
+- 参数描述显示
 
-### 3. 请求示例
-- 多种预设示例
-- 一键切换不同场景
-- 实时参数预览
+### 3. 请求构建
+- 自动构建完整的请求URL
+- 正确设置请求头
+- JSON格式的请求体
 
 ### 4. 响应展示
 - 格式化的JSON响应
-- 状态码说明
+- 状态码显示
 - 错误信息展示
 
 ## 使用指南
@@ -131,7 +109,7 @@ responses:
 
 2. **使用Try It功能**
    - 在API文档页面点击"Try It"
-   - 输入您的API密钥
+   - 输入您的API密钥（不需要添加Bearer前缀）
    - 填写必要的参数
    - 点击"Send"发送请求
 
@@ -142,69 +120,137 @@ responses:
 
 ### 对于文档维护者
 
-1. **更新API配置**
-   - 修改`api-reference/openapi.yaml`文件
-   - 更新相应的MDX文档文件
-   - 确保配置一致性
+1. **添加新的API端点**
+   - 创建新的MDX文件
+   - 使用正确的frontmatter格式
+   - 使用`<Field>`组件定义参数
 
-2. **添加新的API端点**
-   - 在OpenAPI规范中添加新的路径
-   - 定义请求和响应模式
-   - 创建对应的MDX文档
+2. **更新现有API**
+   - 修改参数定义
+   - 更新示例代码
+   - 确保描述准确
 
 3. **测试配置**
    - 验证Try It功能正常工作
    - 检查参数验证是否正确
    - 确认示例数据有效
 
+## 配置示例
+
+### 完整的API文档示例
+
+```mdx
+---
+title: 发型编辑Pro
+api: "POST /hairstyle-editor-pro"
+description: 编辑人像图片中的发型和颜色
+---
+
+# 发型编辑Pro
+
+基于稳定扩散模型，智能编辑人像图片中的发型和颜色。
+
+<RequestExample>
+```bash
+curl -X POST https://api.ailabtools.com/v1/hairstyle-editor-pro \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ...",
+    "hairstyle": "short",
+    "hair_color": "black"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "request_id": "req_123456789",
+  "log_id": "log_987654321",
+  "error_code": 0,
+  "result": {
+    "task_id": "task_abcdef123456"
+  }
+}
+```
+</ResponseExample>
+
+## 请求参数
+
+<Field name="image" type="string" required>
+Base64编码的图片数据，支持PNG、JPG、JPEG格式
+</Field>
+
+<Field name="hairstyle" type="string">
+发型类型，详见下方发型选项
+</Field>
+
+<Field name="hair_color" type="string">
+发色，详见下方颜色选项
+</Field>
+```
+
 ## 常见问题
 
 ### Q: Try It功能无法正常工作？
 A: 检查以下配置：
-- API密钥格式是否正确
-- 必填参数是否已填写
-- 网络连接是否正常
-- 服务器是否可访问
+- `mint.json`中的API配置是否正确
+- API端点路径是否正确
+- 参数定义是否使用了`<Field>`组件
 
 ### Q: 如何添加新的API端点？
 A: 按以下步骤操作：
-1. 在`openapi.yaml`中添加新的路径定义
-2. 创建对应的MDX文档文件
-3. 在`docs.json`的导航中添加新页面
-4. 测试Try It功能
+1. 创建新的MDX文件
+2. 使用正确的frontmatter格式
+3. 使用`<Field>`组件定义参数
+4. 在`mint.json`的导航中添加新页面
 
 ### Q: 如何自定义认证方式？
-A: 修改`openapi.yaml`中的`securitySchemes`部分：
-```yaml
-components:
-  securitySchemes:
-    YourAuth:
-      type: http
-      scheme: basic  # 或其他认证方式
+A: 修改`mint.json`中的`api.auth`部分：
+```json
+{
+  "api": {
+    "auth": {
+      "type": "basic",  // 或其他认证方式
+      "name": "Authorization"
+    }
+  }
+}
 ```
+
+### Q: 参数输入框没有显示？
+A: 确保：
+- 使用了`<Field>`组件而不是表格
+- 参数名称正确
+- 类型定义正确
 
 ## 最佳实践
 
 1. **保持配置一致性**
-   - OpenAPI规范和MDX文档保持一致
-   - 示例数据与实际API响应一致
+   - 所有API文档使用相同的格式
+   - 参数定义清晰明确
+   - 示例代码准确
 
 2. **提供详细说明**
    - 为每个参数提供清晰的描述
    - 包含使用示例和注意事项
+   - 说明参数格式要求
 
 3. **错误处理**
-   - 定义完整的错误响应
-   - 提供有意义的错误信息
+   - 提供完整的错误码说明
+   - 包含错误处理示例
+   - 说明常见问题解决方案
 
 4. **版本管理**
    - 使用语义化版本号
    - 记录API变更历史
+   - 保持向后兼容性
 
 ## 技术支持
 
 如果您在使用过程中遇到问题，请：
-1. 查看本文档的常见问题部分
+1. 查看[Mintlify官方文档](https://mintlify.com/docs)
 2. 检查配置文件的语法正确性
 3. 联系技术支持团队
 
