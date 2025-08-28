@@ -2,140 +2,176 @@
 
 本文档说明了如何配置Mintlify的"Try It"功能，使其能够正确处理API密钥和表单参数。
 
-## 当前配置状态
+## 配置概述
 
-根据[Mintlify官方文档](https://mintlify.com/docs)，我们已经配置了基本的API页面结构，但Try It功能可能需要特定的配置才能正确显示参数录入框。
+根据[Mintlify API Playground文档](https://mintlify.com/docs/api-playground/overview)，我们使用了正确的配置方式来启用API的"Try It"功能：
 
 ### 1. 主要配置文件
 
 #### `mint.json`
 - **Mintlify主配置**: 使用标准的Mintlify配置文件
-- **导航结构**: 定义文档的导航和分组
-- **基础设置**: 品牌、颜色、链接等配置
+- **OpenAPI引用**: 通过`openapi`属性引用OpenAPI规范文件
+- **API Playground配置**: 启用交互式API测试功能
 
-#### API文档文件
-每个API文档文件（如`hairstyle-editor-pro.mdx`）都包含：
-- **API端点定义**: 使用`api: "POST /endpoint"`格式
-- **基础URL配置**: 在frontmatter中指定`baseUrl`
-- **参数表格**: 使用表格格式定义参数
-- **示例代码**: 多种编程语言的调用示例
+#### `openapi.json`
+- **OpenAPI规范**: 包含所有API端点的完整定义
+- **异步API支持**: 正确定义异步API的请求和响应格式
+- **参数定义**: 详细的请求参数和响应参数说明
 
 ## 配置详解
 
-### API端点配置
+### OpenAPI规范配置
 
-```yaml
----
-title: 发型编辑Pro
-api: "POST /hairstyle-editor-pro"
-description: 编辑人像图片中的发型和颜色
-baseUrl: "https://api.ailabtools.com/v1"
----
+```json
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "AILabTools API",
+    "version": "1.0.0",
+    "description": "基于稳定扩散模型的发型编辑Pro功能API"
+  },
+  "servers": [
+    {
+      "url": "https://api.ailabtools.com/v1",
+      "description": "生产环境"
+    }
+  ]
+}
 ```
 
-这个配置：
-- 定义了API端点路径
-- 指定了HTTP方法
-- 提供了API描述
-- 设置了基础URL
+### 导航配置
 
-### 参数定义
-
-```markdown
-| 参数名 | 类型 | 必需 | 描述 |
-|--------|------|------|------|
-| `image` | string | 是 | Base64编码的图片数据，支持PNG、JPG、JPEG格式 |
-| `hairstyle` | string | 否 | 发型类型，详见下方发型选项 |
-| `hair_color` | string | 否 | 发色，详见下方颜色选项 |
+```json
+{
+  "navigation": [
+    {
+      "group": "API参考",
+      "openapi": "openapi.json"
+    }
+  ]
+}
 ```
 
-这个配置：
-- 使用表格格式定义参数
-- 指定参数名称、类型和是否必需
-- 提供参数描述
+这个配置告诉Mintlify：
+- 自动从OpenAPI规范生成API页面
+- 为每个端点创建交互式Playground
+- 生成参数录入框和示例代码
 
-## 当前问题分析
-
-### Try It功能不显示参数录入框的可能原因
-
-1. **Mintlify版本问题**
-   - 可能需要更新到最新版本的Mintlify
-   - 某些功能可能仅在特定版本中可用
-
-2. **配置格式问题**
-   - 可能需要使用特定的配置格式
-   - 参数定义方式可能需要调整
-
-3. **API页面类型问题**
-   - 可能需要将页面标记为特定的API页面类型
-   - 可能需要额外的配置来启用Try It功能
-
-## 解决方案
-
-### 方案1: 使用Mintlify的API页面专用配置
-
-尝试在`mint.json`中添加API配置：
+### API Playground配置
 
 ```json
 {
   "api": {
-    "baseUrl": "https://api.ailabtools.com/v1",
     "playground": {
-      "enabled": true
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": ["curl", "python", "javascript"],
+      "defaults": "required"
     }
   }
 }
 ```
 
-### 方案2: 使用Field组件
+这个配置：
+- 启用交互式API Playground
+- 生成多种编程语言的示例代码
+- 只显示必需参数（减少复杂性）
 
-尝试在API文档中使用Field组件而不是表格：
+## 异步API配置
 
-```mdx
-<Field name="image" type="string" required>
-Base64编码的图片数据，支持PNG、JPG、JPEG格式
-</Field>
+### 异步API特点
 
-<Field name="hairstyle" type="string">
-发型类型，详见下方发型选项
-</Field>
+我们的API采用异步处理模式：
+1. **提交任务**: 调用API提交处理请求，返回`task_id`
+2. **查询结果**: 使用`task_id`查询处理结果
+3. **状态轮询**: 定期查询直到任务完成
 
-<Field name="hair_color" type="string">
-发色，详见下方颜色选项
-</Field>
+### OpenAPI中的异步API定义
+
+```json
+{
+  "/hairstyle-editor-pro": {
+    "post": {
+      "summary": "发型编辑Pro",
+      "description": "基于稳定扩散模型，智能编辑人像图片中的发型和颜色",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["image"],
+              "properties": {
+                "image": {
+                  "type": "string",
+                  "format": "byte",
+                  "description": "Base64编码的图片数据"
+                },
+                "hairstyle": {
+                  "type": "string",
+                  "enum": ["short", "medium", "long", ...],
+                  "description": "发型类型"
+                },
+                "hair_color": {
+                  "type": "string",
+                  "enum": ["black", "brown", "blonde", ...],
+                  "description": "发色"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "请求成功",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "type": "object",
+                    "properties": {
+                      "task_id": {
+                        "type": "string",
+                        "description": "异步任务ID，用于查询处理结果"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 ```
 
-### 方案3: 使用OpenAPI规范
+## Try It 功能特性
 
-创建OpenAPI规范文件并在配置中引用：
+### 1. 自动生成的参数录入框
+- 基于OpenAPI规范自动生成
+- 支持必填参数验证
+- 提供参数描述和示例值
 
-```yaml
-# openapi.yaml
-openapi: 3.0.0
-info:
-  title: AILabTools API
-  version: 1.0.0
-paths:
-  /hairstyle-editor-pro:
-    post:
-      summary: 发型编辑Pro
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                image:
-                  type: string
-                  description: Base64编码的图片数据
-                hairstyle:
-                  type: string
-                  description: 发型类型
-                hair_color:
-                  type: string
-                  description: 发色
-```
+### 2. 交互式API测试
+- 实时发送API请求
+- 显示响应结果
+- 支持错误处理
+
+### 3. 多语言示例代码
+- 自动生成curl、Python、JavaScript示例
+- 包含正确的参数格式
+- 提供完整的请求示例
+
+### 4. 异步API支持
+- 正确处理异步API的请求/响应
+- 提供任务ID查询功能
+- 支持状态轮询说明
 
 ## 使用指南
 
@@ -145,81 +181,190 @@ paths:
    - 访问 [AILabTools控制台](https://console.ailabtools.com)
    - 生成新的API密钥
 
-2. **使用API文档**
-   - 查看参数说明和示例代码
-   - 参考错误码和处理方式
-   - 使用提供的代码示例进行集成
+2. **使用Try It功能**
+   - 在API文档页面点击"Try It"
+   - 输入您的API密钥
+   - 填写必要的参数（image为必填）
+   - 点击"Send"发送请求
+   - 查看响应结果
 
-3. **手动测试API**
-   - 使用curl命令测试API
-   - 使用Postman或其他API测试工具
-   - 参考示例代码进行开发
+3. **处理异步响应**
+   - 获取返回的`task_id`
+   - 使用异步任务查询API检查状态
+   - 轮询直到任务完成
 
 ### 对于文档维护者
 
-1. **更新API文档**
-   - 修改参数定义
-   - 更新示例代码
-   - 确保描述准确
+1. **更新API定义**
+   - 修改`openapi.json`文件
+   - 更新参数定义和响应格式
+   - 确保OpenAPI规范有效
 
-2. **测试配置**
-   - 验证文档显示正确
-   - 检查示例代码可用性
-   - 确认错误处理完整
+2. **添加新的API端点**
+   - 在OpenAPI规范中添加新的路径
+   - 定义请求和响应模式
+   - Mintlify会自动生成页面
+
+3. **测试配置**
+   - 验证Try It功能正常工作
+   - 检查参数验证是否正确
+   - 确认示例代码可用
+
+## 配置示例
+
+### 完整的mint.json配置
+
+```json
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "AILabTools API",
+  "navigation": [
+    {
+      "group": "API参考",
+      "openapi": "openapi.json"
+    }
+  ],
+  "api": {
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": ["curl", "python", "javascript"],
+      "defaults": "required"
+    }
+  }
+}
+```
+
+### 异步API的OpenAPI定义
+
+```json
+{
+  "paths": {
+    "/hairstyle-editor-pro": {
+      "post": {
+        "summary": "发型编辑Pro",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["image"],
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "Base64编码的图片数据"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "task_id": {
+                          "type": "string",
+                          "description": "异步任务ID"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
 
 ## 常见问题
 
 ### Q: Try It功能无法正常工作？
-A: 可能的原因：
-- Mintlify版本过旧
-- 配置格式不正确
-- 需要特定的API页面配置
+A: 检查以下配置：
+- OpenAPI规范文件是否有效
+- `mint.json`中的`openapi`引用是否正确
+- API Playground是否设置为`"interactive"`
 
 ### Q: 如何添加新的API端点？
 A: 按以下步骤操作：
-1. 创建新的MDX文件
-2. 使用正确的frontmatter格式
-3. 定义参数表格
-4. 在`mint.json`的导航中添加新页面
+1. 在`openapi.json`中添加新的路径定义
+2. 定义请求和响应模式
+3. Mintlify会自动生成对应的页面
 
 ### Q: 如何配置API认证？
-A: 当前配置中，用户需要手动添加Authorization头：
-- 格式：`Bearer YOUR_API_KEY`
-- 在API调用时手动设置
+A: 在OpenAPI规范中添加安全定义：
+```json
+{
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}
+```
 
-### Q: 参数输入框没有显示？
-A: 可能的原因：
-- 需要使用Field组件而不是表格
-- 需要特定的Mintlify配置
-- 可能需要更新Mintlify版本
+### Q: 参数录入框没有显示？
+A: 确保：
+- OpenAPI规范中的参数定义正确
+- 使用了正确的数据类型和格式
+- API Playground设置为`"interactive"`
+
+### Q: 如何处理异步API？
+A: 异步API需要：
+1. 正确定义请求和响应格式
+2. 在响应中包含`task_id`
+3. 提供查询任务状态的API端点
+4. 在文档中说明轮询机制
 
 ## 最佳实践
 
-1. **保持配置一致性**
-   - 所有API文档使用相同的格式
-   - 参数定义清晰明确
-   - 示例代码准确
+1. **保持OpenAPI规范更新**
+   - 及时更新API定义
+   - 确保参数和响应格式准确
+   - 提供完整的示例数据
 
-2. **提供详细说明**
-   - 为每个参数提供清晰的描述
-   - 包含使用示例和注意事项
-   - 说明参数格式要求
+2. **异步API文档**
+   - 清楚说明异步处理流程
+   - 提供轮询示例代码
+   - 说明错误处理方式
 
-3. **错误处理**
-   - 提供完整的错误码说明
+3. **参数验证**
+   - 使用枚举值限制选项
+   - 提供清晰的参数描述
+   - 包含格式要求说明
+
+4. **错误处理**
+   - 定义完整的错误响应
+   - 提供错误码说明
    - 包含错误处理示例
-   - 说明常见问题解决方案
-
-4. **版本管理**
-   - 使用语义化版本号
-   - 记录API变更历史
-   - 保持向后兼容性
 
 ## 技术支持
 
 如果您在使用过程中遇到问题，请：
-1. 查看[Mintlify官方文档](https://mintlify.com/docs)
-2. 检查配置文件的语法正确性
+1. 查看[Mintlify API Playground文档](https://mintlify.com/docs/api-playground/overview)
+2. 验证OpenAPI规范的有效性
 3. 联系技术支持团队
 
 ---
