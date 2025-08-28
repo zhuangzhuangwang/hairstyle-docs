@@ -2,6 +2,7 @@
 title: 异步任务查询
 api: "GET /async-task-results"
 description: 查询异步任务的处理结果
+baseUrl: "https://api.ailabtools.com/v1"
 ---
 
 # 异步任务查询
@@ -14,9 +15,9 @@ description: 查询异步任务的处理结果
 
 ## 请求参数
 
-| 参数名 | 类型 | 必需 | 描述 |
-|--------|------|------|------|
-| `task_id` | string | 是 | 异步任务ID，从其他API响应中获取 |
+<Field name="task_id" type="string" required>
+异步任务ID，从其他API响应中获取
+</Field>
 
 ## 响应参数
 

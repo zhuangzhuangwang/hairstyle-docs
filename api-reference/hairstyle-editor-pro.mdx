@@ -2,6 +2,7 @@
 title: 发型编辑Pro
 api: "POST /hairstyle-editor-pro"
 description: 编辑人像图片中的发型和颜色
+baseUrl: "https://api.ailabtools.com/v1"
 ---
 
 # 发型编辑Pro
@@ -10,11 +11,17 @@ description: 编辑人像图片中的发型和颜色
 
 ## 请求参数
 
-| 参数名 | 类型 | 必需 | 描述 |
-|--------|------|------|------|
-| `image` | string | 是 | Base64编码的图片数据，支持PNG、JPG、JPEG格式 |
-| `hairstyle` | string | 否 | 发型类型，详见下方发型选项 |
-| `hair_color` | string | 否 | 发色，详见下方颜色选项 |
+<Field name="image" type="string" required>
+Base64编码的图片数据，支持PNG、JPG、JPEG格式
+</Field>
+
+<Field name="hairstyle" type="string">
+发型类型，详见下方发型选项
+</Field>
+
+<Field name="hair_color" type="string">
+发色，详见下方颜色选项
+</Field>
 
 <RequestExample>
 ```json
