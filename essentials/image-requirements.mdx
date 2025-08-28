@@ -1,0 +1,263 @@
+---
+title: 图片要求
+description: AILabTools API图片上传要求和最佳实践
+---
+
+# 图片要求
+
+为了获得最佳的AI处理效果，请确保您上传的图片符合以下要求。
+
+## 基本要求
+
+### 图片格式
+
+支持以下图片格式：
+- **PNG** - 推荐用于需要透明背景的场景
+- **JPG** - 推荐用于一般用途，文件较小
+- **JPEG** - 与JPG相同
+
+<Note>
+建议使用JPG格式，因为它提供了良好的压缩率和兼容性。
+</Note>
+
+### 图片大小
+
+- **最大文件大小**: 3MB
+- **推荐文件大小**: 1MB以下
+
+<Warning>
+超过3MB的图片将被拒绝处理。如果您的图片过大，请使用图片压缩工具减小文件大小。
+</Warning>
+
+### 图片分辨率
+
+- **最小分辨率**: 200x200像素
+- **最大分辨率**: 1999x1999像素
+- **推荐分辨率**: 800x800像素到1200x1200像素
+
+## 人脸要求
+
+### 人脸数量
+
+- **要求**: 图片中必须包含且仅包含一个人脸
+- **不允许**: 多个人脸、动物脸、卡通脸
+
+### 人脸清晰度
+
+- **要求**: 人脸清晰可见，五官分明
+- **避免**: 模糊、过度曝光、严重阴影的人脸
+
+### 人脸角度
+
+- **最大角度**: 30度（相对于正面）
+- **推荐角度**: 正面或接近正面
+- **避免**: 侧面、背面、过度倾斜的人脸
+
+### 人脸占比
+
+- **最小占比**: 图片面积的10%
+- **推荐占比**: 20%-50%
+- **避免**: 人脸过小或过大
+
+## 图片质量要求
+
+### 光线条件
+
+- **推荐**: 自然光或均匀的人工光源
+- **避免**: 强逆光、严重阴影、过度曝光
+
+### 背景要求
+
+- **推荐**: 简洁、不复杂的背景
+- **避免**: 过于复杂或与肤色相近的背景
+
+### 表情要求
+
+- **推荐**: 自然、中性的表情
+- **避免**: 夸张的表情、张嘴、闭眼
+
+## 最佳实践
+
+### 1. 拍摄建议
+
+<Grid cols={2}>
+<Card title="✅ 推荐做法">
+- 使用自然光线
+- 保持正面角度
+- 确保人脸清晰
+- 使用简洁背景
+- 保持自然表情
+</Card>
+
+<Card title="❌ 避免做法">
+- 强逆光拍摄
+- 侧面或背面
+- 模糊或抖动
+- 复杂背景
+- 夸张表情
+</Card>
+</Grid>
+
+### 2. 图片预处理
+
+在上传前，建议进行以下预处理：
+
+```javascript
+// JavaScript示例：图片预处理
+function preprocessImage(file) {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    
+    img.onload = function() {
+      // 调整分辨率
+      const maxSize = 1200;
+      let { width, height } = img;
+      
+      if (width > maxSize || height > maxSize) {
+        if (width > height) {
+          height = (height * maxSize) / width;
+          width = maxSize;
+        } else {
+          width = (width * maxSize) / height;
+          height = maxSize;
+        }
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
+      
+      // 绘制图片
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      // 转换为Blob
+      canvas.toBlob((blob) => {
+        resolve(blob);
+      }, 'image/jpeg', 0.8);
+    };
+    
+    img.src = URL.createObjectURL(file);
+  });
+}
+```
+
+```python
+# Python示例：图片预处理
+from PIL import Image
+import io
+
+def preprocess_image(image_path, output_path):
+    """预处理图片"""
+    with Image.open(image_path) as img:
+        # 转换为RGB模式
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+        
+        # 调整分辨率
+        max_size = 1200
+        if max(img.size) > max_size:
+            img.thumbnail((max_size, max_size), Image.Resampling.LANCZOS)
+        
+        # 保存为JPEG格式
+        img.save(output_path, 'JPEG', quality=85, optimize=True)
+```
+
+### 3. 验证图片
+
+在上传前验证图片是否符合要求：
+
+```javascript
+// JavaScript示例：图片验证
+function validateImage(file) {
+  return new Promise((resolve, reject) => {
+    // 检查文件大小
+    if (file.size > 3 * 1024 * 1024) {
+      reject(new Error('图片大小不能超过3MB'));
+      return;
+    }
+    
+    // 检查文件类型
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (!allowedTypes.includes(file.type)) {
+      reject(new Error('只支持JPG、JPEG、PNG格式'));
+      return;
+    }
+    
+    // 检查图片尺寸
+    const img = new Image();
+    img.onload = function() {
+      const { width, height } = img;
+      
+      if (width < 200 || height < 200) {
+        reject(new Error('图片分辨率不能小于200x200像素'));
+        return;
+      }
+      
+      if (width > 1999 || height > 1999) {
+        reject(new Error('图片分辨率不能大于1999x1999像素'));
+        return;
+      }
+      
+      resolve(true);
+    };
+    
+    img.onerror = () => reject(new Error('无法读取图片'));
+    img.src = URL.createObjectURL(file);
+  });
+}
+```
+
+## 常见问题
+
+<Accordion>
+<AccordionItem title="为什么我的图片被拒绝了？">
+常见原因包括：
+- 图片大小超过3MB
+- 图片分辨率不符合要求
+- 未检测到人脸或检测到多个人脸
+- 人脸角度过大
+- 人脸占比过小
+
+建议使用我们的人脸分析API进行预验证。
+</AccordionItem>
+
+<AccordionItem title="如何处理大图片？">
+可以使用图片压缩工具：
+- 在线工具：TinyPNG、Compressor.io
+- 桌面软件：Photoshop、GIMP
+- 编程库：PIL、Sharp等
+</AccordionItem>
+
+<AccordionItem title="支持哪些图片格式？">
+目前支持PNG、JPG、JPEG格式。推荐使用JPG格式以获得最佳兼容性。
+</AccordionItem>
+
+<AccordionItem title="如何处理模糊的图片？">
+模糊的图片可能影响处理效果。建议：
+- 使用更清晰的原始图片
+- 避免过度压缩
+- 确保拍摄时相机稳定
+</AccordionItem>
+</Accordion>
+
+## 工具推荐
+
+### 在线工具
+- [TinyPNG](https://tinypng.com/) - 图片压缩
+- [Canva](https://canva.com/) - 图片编辑
+- [Remove.bg](https://remove.bg/) - 背景移除
+
+### 桌面软件
+- **Photoshop** - 专业图片编辑
+- **GIMP** - 免费图片编辑
+- **Paint.NET** - 轻量级图片编辑
+
+### 编程库
+- **JavaScript**: Canvas API, Sharp
+- **Python**: PIL/Pillow, OpenCV
+- **Node.js**: Sharp, Jimp
+
+<CTA href="/api/face-analysis">
+  使用人脸分析API验证图片
+</CTA>
