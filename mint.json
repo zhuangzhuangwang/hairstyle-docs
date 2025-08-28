@@ -93,8 +93,8 @@
   "cname": "docs.ailabtools.com",
   "api": {
     "baseUrl": "https://api.ailabtools.com/v1",
-    "auth": {
-      "type": "bearer"
+    "tryIt": {
+      "enabled": true
     }
   }
 }
