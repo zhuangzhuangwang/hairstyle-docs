@@ -1,153 +1,63 @@
 ---
-title: API概览
-description: AILabTools API完整概览和基础信息
+title: 'API概述'
+description: 'AILabTools API文档介绍'
 ---
 
-# API概览
-
-AILabTools提供强大的AI发型编辑功能，基于最新的稳定扩散模型，让您轻松实现人像发型的智能编辑和美化。
-
-## 基础信息
-
 <Note>
-所有API请求都需要在请求头中包含您的API密钥进行认证。
+  欢迎使用AILabTools API文档。本文档提供了基于稳定扩散模型的发型编辑Pro功能的完整API参考。
 </Note>
 
-### 基础URL
-```
-https://api.ailabtools.com/v1
-```
+## 欢迎
 
-### 认证方式
-所有API请求都需要在请求头中包含API密钥：
+我们提供了两种方式来构建API文档：[OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) 和 [MDX组件](https://mintlify.com/docs/api-playground/mdx/configuration)。我们使用以下OpenAPI规范。
 
-```bash
-Authorization: Bearer YOUR_API_KEY
-```
+<Card
+  title="AILabTools API端点"
+  icon="image"
+  href="https://github.com/ailabtools/hairstyle-cn-docs/blob/main/openapi.json"
+>
+  查看OpenAPI规范文件
+</Card>
 
-### 响应格式
-所有API响应都使用JSON格式，包含以下标准字段：
+## 认证
 
-| 字段 | 类型 | 描述 |
-|------|------|------|
-| `request_id` | string | 请求ID，用于问题定位 |
-| `log_id` | string | 日志ID |
-| `error_code` | number | 错误码，0表示成功 |
-| `error_detail` | object | 错误详情 |
-
-### 错误处理
-当API调用失败时，响应会包含错误信息：
+所有API端点都使用Bearer Token进行认证，认证配置在规范文件中定义。
 
 ```json
-{
-  "request_id": "req_123456789",
-  "log_id": "log_987654321",
-  "error_code": 1001,
-  "error_detail": {
-    "status_code": 400,
-    "code": "INVALID_PARAMETER",
-    "code_message": "参数错误",
-    "message": "请求参数无效"
+"security": [
+  {
+    "bearerAuth": []
   }
-}
+]
 ```
 
 ## API端点
 
-<Grid cols={2}>
-<Card title="发型编辑Pro" href="/api-reference/hairstyle-editor-pro">
-编辑人像图片中的发型和颜色
-</Card>
+我们的API包含以下主要端点：
 
-<Card title="异步任务查询" href="/api-reference/async-task-results">
-查询异步任务的处理结果
-</Card>
+### 发型编辑Pro
+- **POST** `/hairstyle-editor-pro` - 基于稳定扩散模型，智能编辑人像图片中的发型和颜色
 
-<Card title="人脸分析" href="/api-reference/face-analysis">
-分析图片中的人脸信息
-</Card>
-</Grid>
+### 异步任务查询
+- **GET** `/async-task-results` - 查询异步任务的处理结果，获取最终的图片处理结果
 
-## 状态码
+### 人脸分析
+- **POST** `/face-analysis` - 分析图片中的人脸信息，包括人脸数量、位置、角度等，用于前端验证
 
-| 状态码 | 描述 |
-|--------|------|
-| 200 | 请求成功 |
-| 400 | 请求参数错误 |
-| 401 | 认证失败 |
-| 403 | 权限不足 |
-| 429 | 请求频率超限 |
-| 500 | 服务器内部错误 |
+## 异步API流程
 
-## 速率限制
+我们的API采用异步处理模式：
 
-- **免费用户**: 每分钟10次请求
-- **付费用户**: 每分钟100次请求
-- **企业用户**: 每分钟1000次请求
+1. **提交任务**: 调用发型编辑API提交处理请求，返回`task_id`
+2. **查询结果**: 使用`task_id`查询处理结果
+3. **状态轮询**: 定期查询直到任务完成
 
-<Note>
-超出速率限制时，API会返回429状态码。
-</Note>
+## 图片要求
 
-## 快速开始
-
-<Tabs>
-<Tab title="JavaScript">
-```javascript
-const response = await fetch('https://api.ailabtools.com/v1/hairstyle-editor-pro', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'Bearer YOUR_API_KEY',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    image: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ...',
-    hairstyle: 'short',
-    hair_color: 'black'
-  })
-});
-
-const result = await response.json();
-console.log(result);
-```
-</Tab>
-
-<Tab title="Python">
-```python
-import requests
-
-response = requests.post(
-    'https://api.ailabtools.com/v1/hairstyle-editor-pro',
-    headers={
-        'Authorization': 'Bearer YOUR_API_KEY',
-        'Content-Type': 'application/json'
-    },
-    json={
-        'image': 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ...',
-        'hairstyle': 'short',
-        'hair_color': 'black'
-    }
-)
-
-result = response.json()
-print(result)
-```
-</Tab>
-
-<Tab title="cURL">
-```bash
-curl -X POST https://api.ailabtools.com/v1/hairstyle-editor-pro \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ...",
-    "hairstyle": "short",
-    "hair_color": "black"
-  }'
-```
-</Tab>
-</Tabs>
-
-<CTA href="/quickstart">
-  开始使用
-</CTA>
+- **图像格式**: `PNG` `JPG` `JPEG`
+- **图像大小**: 不超过3MB
+- **图像分辨率**: 大于200x200px，小于1999x1999px
+- **人脸要求**: 
+  - 图片中必须包含一个人脸
+  - 人脸占比应大于图片的10%
+  - 人脸角度不应超过30度
