@@ -1,0 +1,194 @@
+---
+title: '响应字段说明'
+description: 'API响应字段和错误码说明'
+---
+
+# 响应字段说明
+
+## 公共响应字段
+
+| 字段 | 必填 | 类型 | 描述 |
+|:-----|:-----|:-----|:-----|
+| `request_id` | 是 | `string` | 请求ID。如果出现问题无法定位，可以将此字段发送给技术支持进行问题定位。 |
+| `log_id` | 是 | `string` | 日志ID。如果出现问题无法定位，可以将此字段发送给技术支持进行问题定位。 |
+| `error_code` | 是 | `integer` | 状态码。当HTTP状态为200时：error_code=0；否则与HTTP状态完全相同。 |
+| `error_detail` | 是 | `object` | 错误详情。 |
+| +`status_code` | 是 | `integer` | 状态码。 |
+| +`code` | 是 | `string` | 错误代码。 |
+| +`code_message` | 是 | `string` | 错误代码表示的信息。 |
+| +`message` | 是 | `string` | `code_message`字段的补充信息。 |
+
+## 如何验证请求是否成功？
+
+<Warning>
+- 使用HTTP状态码：
+  - **200**: 成功
+  - **其他**: 失败
+- 使用`error_code`字段：
+  - **0**: 成功
+  - **其他**: 失败
+</Warning>
+
+## 成功响应示例
+
+```json
+{
+  "request_id": "Request ID",
+  "log_id": "Log ID",
+  "error_code": 0,
+  "error_detail": {
+    "status_code": 200,
+    "code": "",
+    "code_message": "",
+    "message": ""
+  }
+}
+```
+
+## 失败响应示例
+
+```json
+{
+  "request_id": "Request ID",
+  "log_id": "Log ID",
+  "error_code": 422,
+  "error_detail": {
+    "status_code": 422,
+    "code": "ERROR_NO_FACE_IN_FILE",
+    "code_message": "No face detected in the file.",
+    "message": "pic not has face"
+  }
+}
+```
+
+## 常见错误代码
+
+| HTTP状态 | 错误代码 | 描述 |
+|:---------|:---------|:-----|
+| 400 | `PROCESSING_FAILURE` | 处理失败 |
+| 400 | `ERROR_PARAMETERS` | 无效参数 |
+| 400 | `MISSING_PARAMETERS` | 缺少参数 |
+| 400 | `ERROR_INVALID_PARAMETER` | 无效参数 |
+| 400 | `PARAMETERS_CANNOT_EMPTY` | 参数不能为空 |
+| 400 | `ERROR_TOO_MANY_FILES` | 文件数量超出限制 |
+| 400 | `ERROR_FACE_TRACE_LIMIT_EXCEEDED` | 人脸或追踪限制超出 |
+| 400 | `ERROR_INVALID_URL` | 无效URL |
+| 400 | `ERROR_FILE_DOWNLOAD_FAILED` | 文件下载失败 |
+| 400 | `ERROR_FILE_UPLOAD_FAILED` | 文件上传失败 |
+| 400 | `FILE_DECODING_FAILURE` | 文件解码失败 |
+| 422 | `ERROR_NO_FACE_IN_FILE` | 文件中未检测到人脸 |
+| 422 | `ERROR_MULTIPLE_FACES_IN_FILE` | 文件中检测到多个人脸 |
+| 422 | `ERROR_FACE_TOO_SMALL` | 人脸太小 |
+| 422 | `ERROR_FACE_TOO_LARGE` | 人脸太大 |
+| 422 | `ERROR_FACE_ANGLE_TOO_LARGE` | 人脸角度过大 |
+| 422 | `ERROR_FACE_OCCLUDED` | 人脸被遮挡 |
+| 422 | `ERROR_FACE_BLURRY` | 人脸模糊 |
+| 422 | `ERROR_FACE_INCOMPLETE` | 人脸不完整 |
+| 422 | `ERROR_FACE_NOT_FRONTAL` | 人脸不是正面 |
+| 422 | `ERROR_FACE_NOT_CENTERED` | 人脸未居中 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE` | 人脸大小不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE` | 人脸角度不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING` | 人脸光线不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION` | 人脸表情不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_QUALITY` | 人脸质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_FORMAT` | 人脸格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_RESOLUTION` | 人脸分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_RATIO` | 人脸大小比例不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_RATIO` | 人脸角度比例不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_RATIO` | 人脸光线比例不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION_RATIO` | 人脸表情比例不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_QUALITY_RATIO` | 人脸质量比例不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_FORMAT_RATIO` | 人脸格式比例不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_RESOLUTION_RATIO` | 人脸分辨率比例不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE` | 人脸大小角度不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING` | 人脸大小光线不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_EXPRESSION` | 人脸大小表情不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_QUALITY` | 人脸大小质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_FORMAT` | 人脸大小格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_RESOLUTION` | 人脸大小分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING` | 人脸角度光线不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_EXPRESSION` | 人脸角度表情不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_QUALITY` | 人脸角度质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_FORMAT` | 人脸角度格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_RESOLUTION` | 人脸角度分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_EXPRESSION` | 人脸光线表情不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_QUALITY` | 人脸光线质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_FORMAT` | 人脸光线格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_RESOLUTION` | 人脸光线分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION_QUALITY` | 人脸表情质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION_FORMAT` | 人脸表情格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION_RESOLUTION` | 人脸表情分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_QUALITY_FORMAT` | 人脸质量格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_QUALITY_RESOLUTION` | 人脸质量分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_FORMAT_RESOLUTION` | 人脸格式分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING` | 人脸大小角度光线不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_EXPRESSION` | 人脸大小角度表情不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_QUALITY` | 人脸大小角度质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_FORMAT` | 人脸大小角度格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_RESOLUTION` | 人脸大小角度分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_EXPRESSION` | 人脸大小光线表情不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_QUALITY` | 人脸大小光线质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_FORMAT` | 人脸大小光线格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_RESOLUTION` | 人脸大小光线分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_EXPRESSION_QUALITY` | 人脸大小表情质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_EXPRESSION_FORMAT` | 人脸大小表情格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_EXPRESSION_RESOLUTION` | 人脸大小表情分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_QUALITY_FORMAT` | 人脸大小质量格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_QUALITY_RESOLUTION` | 人脸大小质量分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_FORMAT_RESOLUTION` | 人脸大小格式分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_EXPRESSION` | 人脸角度光线表情不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_QUALITY` | 人脸角度光线质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_FORMAT` | 人脸角度光线格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_RESOLUTION` | 人脸角度光线分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_EXPRESSION_QUALITY` | 人脸角度表情质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_EXPRESSION_FORMAT` | 人脸角度表情格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_EXPRESSION_RESOLUTION` | 人脸角度表情分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_QUALITY_FORMAT` | 人脸角度质量格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_QUALITY_RESOLUTION` | 人脸角度质量分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_FORMAT_RESOLUTION` | 人脸角度格式分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_EXPRESSION_QUALITY` | 人脸光线表情质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_EXPRESSION_FORMAT` | 人脸光线表情格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_EXPRESSION_RESOLUTION` | 人脸光线表情分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_QUALITY_FORMAT` | 人脸光线质量格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_QUALITY_RESOLUTION` | 人脸光线质量分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_FORMAT_RESOLUTION` | 人脸光线格式分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION_QUALITY_FORMAT` | 人脸表情质量格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION_QUALITY_RESOLUTION` | 人脸表情质量分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION_FORMAT_RESOLUTION` | 人脸表情格式分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_QUALITY_FORMAT_RESOLUTION` | 人脸质量格式分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION` | 人脸大小角度光线表情不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_QUALITY` | 人脸大小角度光线质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_FORMAT` | 人脸大小角度光线格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_RESOLUTION` | 人脸大小角度光线分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_EXPRESSION_QUALITY` | 人脸大小角度表情质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_EXPRESSION_FORMAT` | 人脸大小角度表情格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_EXPRESSION_RESOLUTION` | 人脸大小角度表情分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_QUALITY_FORMAT` | 人脸大小角度质量格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_QUALITY_RESOLUTION` | 人脸大小角度质量分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_EXPRESSION_QUALITY` | 人脸大小光线表情质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_EXPRESSION_FORMAT` | 人脸大小光线表情格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_EXPRESSION_RESOLUTION` | 人脸大小光线表情分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_QUALITY_FORMAT` | 人脸大小光线质量格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_QUALITY_RESOLUTION` | 人脸大小光线质量分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_EXPRESSION_QUALITY_FORMAT` | 人脸大小表情质量格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_EXPRESSION_QUALITY_RESOLUTION` | 人脸大小表情质量分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_EXPRESSION_QUALITY` | 人脸角度光线表情质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_EXPRESSION_FORMAT` | 人脸角度光线表情格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_EXPRESSION_RESOLUTION` | 人脸角度光线表情分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_QUALITY_FORMAT` | 人脸角度光线质量格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_QUALITY_RESOLUTION` | 人脸角度光线质量分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_EXPRESSION_QUALITY_FORMAT` | 人脸角度表情质量格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_EXPRESSION_QUALITY_RESOLUTION` | 人脸角度表情质量分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_EXPRESSION_QUALITY_FORMAT` | 人脸光线表情质量格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_EXPRESSION_QUALITY_RESOLUTION` | 人脸光线表情质量分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY` | 人脸大小角度光线表情质量不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_FORMAT` | 人脸大小角度光线表情格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_RESOLUTION` | 人脸大小角度光线表情分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_QUALITY_FORMAT` | 人脸大小角度光线质量格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_QUALITY_RESOLUTION` | 人脸大小角度光线质量分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_EXPRESSION_QUALITY_FORMAT` | 人脸大小角度表情质量格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_EXPRESSION_QUALITY_RESOLUTION` | 人脸大小角度表情质量分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_EXPRESSION_QUALITY_FORMAT` | 人脸角度光线表情质量格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_EXPRESSION_QUALITY_RESOLUTION` | 人脸角度光线表情质量分辨率不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY_FORMAT` | 人脸大小角度光线表情质量格式不合适 |
+| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY_RESOLUTION` | 人脸大小角度光线表情质量分辨率不合适 |

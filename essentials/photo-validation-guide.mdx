@@ -1,0 +1,138 @@
+---
+title: '图片验证指南'
+description: '发型编辑Pro图片验证要求和最佳实践'
+---
+
+# 图片验证指南
+
+为了确保用户上传的照片符合发型处理API的要求，建议将工作流程分为两个阶段："人脸分析"和"发型处理"。这种方法通过在前端验证图像来确认其符合标准，然后再调用发型处理API，从而帮助最小化长时间的错误返回，最终提升用户体验。
+
+## 前端验证要求
+
+在调用发型处理API之前，前端应执行以下验证：
+
+1. **图像分辨率和大小**：确保图像符合API的分辨率和文件大小要求，以获得最佳处理质量。
+2. **人脸检测**：验证人脸的存在、人脸数量、人脸与图像的比例，以及人脸角度是否符合要求的标准。
+
+## 具体验证详情
+
+### 1. 人脸和人脸与图像比例验证
+
+- **无人脸或多个人脸**：如果图像中未检测到人脸或检测到多个人脸，前端应返回错误消息，提示用户重新拍摄或重新上传合适的照片。
+- **不符合要求的人脸与图像比例**：如果人脸占图像的比例小于指定百分比（通常为20%），在前端裁剪图像以满足要求的人脸与图像比例。
+
+### 2. 验证方法
+
+为了完成上述验证，前端可以使用[人脸分析API](/api-reference/endpoint/face-analysis)来获取关键人脸数据，以评估人脸数量、人脸与图像比例和人脸角度。
+
+### 3. 验证标准
+
+- **人脸数量**：
+  - `face_num == 0`：未检测到人脸，返回错误。
+  - `face_num != 1`：检测到多个人脸，返回错误。
+
+- **人脸与图像比例**：
+  - 计算公式：(`location.width` * `location.height`) / (`image.width` * `image.height`) > `0.20`
+  - 如果比例小于`0.20`，则不符合要求。使用`location`值的`left`、`top`、`width`和`height`以及整体图像尺寸，确定适当的裁剪区域以调整人脸与图像比例。
+
+- **人脸角度**：
+  - 验证标准：如果任何标准不符合，返回错误消息，提示用户重新拍摄或重新上传照片。
+    - `angle.yaw`的绝对值应小于`45`
+    - `angle.pitch`的绝对值应小于`45`
+    - `angle.roll`的绝对值应小于`45`
+
+## 推荐的工作流程
+
+<Tabs>
+<Tab title="前端验证">
+```javascript
+// 1. 上传图片后立即进行人脸分析
+const analyzeFace = async (imageFile) => {
+  const formData = new FormData();
+  formData.append('task_type', 'sync');
+  formData.append('image', imageFile);
+  
+  const response = await fetch('/api/portrait/analysis/face-analysis', {
+    method: 'POST',
+    headers: {
+      'ailabapi-api-key': 'YOUR_API_KEY'
+    },
+    body: formData
+  });
+  
+  const result = await response.json();
+  
+  if (result.error_code === 0) {
+    const faceInfo = result.result;
+    
+    // 验证人脸数量
+    if (faceInfo.face_num !== 1) {
+      throw new Error('请上传包含一个人脸的照片');
+    }
+    
+    // 验证人脸比例
+    const face = faceInfo.face_info[0];
+    const faceRatio = (face.face_rect.width * face.face_rect.height) / 
+                     (imageWidth * imageHeight);
+    
+    if (faceRatio < 0.20) {
+      throw new Error('人脸占比过小，请重新拍摄或裁剪照片');
+    }
+    
+    // 验证人脸角度
+    if (Math.abs(face.face_angle) > 45) {
+      throw new Error('人脸角度过大，请上传正面照片');
+    }
+    
+    return true; // 验证通过
+  } else {
+    throw new Error('人脸分析失败');
+  }
+};
+```
+</Tab>
+<Tab title="后端处理">
+```javascript
+// 2. 验证通过后调用发型编辑API
+const editHairstyle = async (imageFile, hairStyle, color) => {
+  const formData = new FormData();
+  formData.append('task_type', 'async');
+  formData.append('auto', '1');
+  formData.append('image', imageFile);
+  formData.append('hair_style', hairStyle);
+  formData.append('color', color);
+  formData.append('image_size', '2');
+  
+  const response = await fetch('/api/portrait/effects/hairstyle-editor-pro', {
+    method: 'POST',
+    headers: {
+      'ailabapi-api-key': 'YOUR_API_KEY'
+    },
+    body: formData
+  });
+  
+  return await response.json();
+};
+```
+</Tab>
+</Tabs>
+
+## 最佳实践
+
+<Note>
+- 在前端进行初步验证可以大大减少API调用失败的概率
+- 提供清晰的错误提示，帮助用户理解问题所在
+- 考虑提供图片裁剪工具，让用户可以调整人脸比例
+- 建议在上传前显示预览，让用户确认图片质量
+</Note>
+
+<Warning>
+即使通过了前端验证，API仍可能返回错误。这是因为：
+- 前端验证基于简化的人脸检测算法
+- API使用更精确的AI模型进行验证
+- 网络传输过程中图片质量可能发生变化
+</Warning>
+
+<Tip>
+  使用人脸分析API进行前端验证可以显著提升用户体验，减少无效的API调用，节省成本。
+</Tip>

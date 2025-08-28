@@ -20,6 +20,7 @@
       "group": "开发指南",
       "pages": [
         "development",
+        "essentials/photo-validation-guide",
         "essentials/image-requirements",
         "essentials/error-handling",
         "essentials/best-practices"
@@ -28,6 +29,8 @@
     {
       "group": "其他",
       "pages": [
+        "essentials/get-api-key",
+        "essentials/response-description",
         "essentials/errors",
         "essentials/pricing"
       ]
@@ -42,7 +45,7 @@
       ]
     },
     {
-      "group": "示例展示",
+      "group": "功能介绍",
       "pages": [
         "hairstyle-examples"
       ]
