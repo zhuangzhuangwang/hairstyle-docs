@@ -12,33 +12,11 @@ description: 查询异步任务的处理结果
 对于异步接口，调用API后返回的结果不是真实的请求结果，您需要保存返回结果中的`task_id`，然后调用此接口获取真实的请求结果。
 </Tip>
 
-<RequestExample>
-```bash
-curl -X GET "https://api.ailabtools.com/v1/async-task-results?task_id=task_abcdef123456" \
-  -H "Authorization: Bearer YOUR_API_KEY"
-```
-</RequestExample>
-
-<ResponseExample>
-```json
-{
-  "request_id": "req_123456789",
-  "log_id": "log_987654321",
-  "error_code": 0,
-  "result": {
-    "task_id": "task_abcdef123456",
-    "status": "completed",
-    "result_image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
-  }
-}
-```
-</ResponseExample>
-
 ## 请求参数
 
-<Field name="task_id" type="string" required>
-异步任务ID，从其他API响应中获取
-</Field>
+| 参数名 | 类型 | 必需 | 描述 |
+|--------|------|------|------|
+| `task_id` | string | 是 | 异步任务ID，从其他API响应中获取 |
 
 ## 响应参数
 

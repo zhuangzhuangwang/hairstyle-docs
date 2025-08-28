@@ -8,48 +8,11 @@ description: 分析图片中的人脸信息
 
 分析图片中的人脸信息，包括人脸数量、位置、角度等，用于前端验证。
 
-<RequestExample>
-```bash
-curl -X POST https://api.ailabtools.com/v1/face-analysis \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
-  }'
-```
-</RequestExample>
-
-<ResponseExample>
-```json
-{
-  "request_id": "req_123456789",
-  "log_id": "log_987654321",
-  "error_code": 0,
-  "result": {
-    "face_num": 1,
-    "face_info": [
-      {
-        "face_id": "face_001",
-        "face_rect": {
-          "x": 100,
-          "y": 50,
-          "width": 200,
-          "height": 250
-        },
-        "face_angle": 15,
-        "face_proportion": 0.25
-      }
-    ]
-  }
-}
-```
-</ResponseExample>
-
 ## 请求参数
 
-<Field name="image" type="string" required>
-Base64编码的图片数据，支持PNG、JPG、JPEG格式
-</Field>
+| 参数名 | 类型 | 必需 | 描述 |
+|--------|------|------|------|
+| `image` | string | 是 | Base64编码的图片数据，支持PNG、JPG、JPEG格式 |
 
 ## 响应参数
 

@@ -2,51 +2,20 @@
 title: 发型编辑Pro
 api: "POST /hairstyle-editor-pro"
 description: 编辑人像图片中的发型和颜色
+baseUrl: "https://api.ailabtools.com/v1"
 ---
 
 # 发型编辑Pro
 
 基于稳定扩散模型，智能编辑人像图片中的发型和颜色。
 
-<RequestExample>
-```bash
-curl -X POST https://api.ailabtools.com/v1/hairstyle-editor-pro \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ...",
-    "hairstyle": "short",
-    "hair_color": "black"
-  }'
-```
-</RequestExample>
-
-<ResponseExample>
-```json
-{
-  "request_id": "req_123456789",
-  "log_id": "log_987654321",
-  "error_code": 0,
-  "result": {
-    "task_id": "task_abcdef123456"
-  }
-}
-```
-</ResponseExample>
-
 ## 请求参数
 
-<Field name="image" type="string" required>
-Base64编码的图片数据，支持PNG、JPG、JPEG格式
-</Field>
-
-<Field name="hairstyle" type="string">
-发型类型，详见下方发型选项
-</Field>
-
-<Field name="hair_color" type="string">
-发色，详见下方颜色选项
-</Field>
+| 参数名 | 类型 | 必需 | 描述 |
+|--------|------|------|------|
+| `image` | string | 是 | Base64编码的图片数据，支持PNG、JPG、JPEG格式 |
+| `hairstyle` | string | 否 | 发型类型，详见下方发型选项 |
+| `hair_color` | string | 否 | 发色，详见下方颜色选项 |
 
 ### 图片要求
 

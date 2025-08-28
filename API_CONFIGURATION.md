@@ -2,38 +2,25 @@
 
 本文档说明了如何配置Mintlify的"Try It"功能，使其能够正确处理API密钥和表单参数。
 
-## 配置概述
+## 当前配置状态
 
-根据[Mintlify官方文档](https://mintlify.com/docs)，我们使用了正确的配置方式来启用API的"Try It"功能：
+根据[Mintlify官方文档](https://mintlify.com/docs)，我们已经配置了基本的API页面结构，但Try It功能可能需要特定的配置才能正确显示参数录入框。
 
 ### 1. 主要配置文件
 
 #### `mint.json`
 - **Mintlify主配置**: 使用标准的Mintlify配置文件
-- **API基础配置**: 设置API基础URL
 - **导航结构**: 定义文档的导航和分组
+- **基础设置**: 品牌、颜色、链接等配置
 
 #### API文档文件
 每个API文档文件（如`hairstyle-editor-pro.mdx`）都包含：
 - **API端点定义**: 使用`api: "POST /endpoint"`格式
-- **Field组件**: 使用`<Field>`组件定义参数
+- **基础URL配置**: 在frontmatter中指定`baseUrl`
+- **参数表格**: 使用表格格式定义参数
 - **示例代码**: 多种编程语言的调用示例
 
 ## 配置详解
-
-### API基础配置
-
-```json
-{
-  "api": {
-    "baseUrl": "https://api.ailabtools.com/v1"
-  }
-}
-```
-
-这个配置告诉Mintlify：
-- API的基础URL是`https://api.ailabtools.com/v1`
-- 所有API端点都会基于这个URL构建
 
 ### API端点配置
 
@@ -42,6 +29,7 @@
 title: 发型编辑Pro
 api: "POST /hairstyle-editor-pro"
 description: 编辑人像图片中的发型和颜色
+baseUrl: "https://api.ailabtools.com/v1"
 ---
 ```
 
@@ -49,8 +37,59 @@ description: 编辑人像图片中的发型和颜色
 - 定义了API端点路径
 - 指定了HTTP方法
 - 提供了API描述
+- 设置了基础URL
 
 ### 参数定义
+
+```markdown
+| 参数名 | 类型 | 必需 | 描述 |
+|--------|------|------|------|
+| `image` | string | 是 | Base64编码的图片数据，支持PNG、JPG、JPEG格式 |
+| `hairstyle` | string | 否 | 发型类型，详见下方发型选项 |
+| `hair_color` | string | 否 | 发色，详见下方颜色选项 |
+```
+
+这个配置：
+- 使用表格格式定义参数
+- 指定参数名称、类型和是否必需
+- 提供参数描述
+
+## 当前问题分析
+
+### Try It功能不显示参数录入框的可能原因
+
+1. **Mintlify版本问题**
+   - 可能需要更新到最新版本的Mintlify
+   - 某些功能可能仅在特定版本中可用
+
+2. **配置格式问题**
+   - 可能需要使用特定的配置格式
+   - 参数定义方式可能需要调整
+
+3. **API页面类型问题**
+   - 可能需要将页面标记为特定的API页面类型
+   - 可能需要额外的配置来启用Try It功能
+
+## 解决方案
+
+### 方案1: 使用Mintlify的API页面专用配置
+
+尝试在`mint.json`中添加API配置：
+
+```json
+{
+  "api": {
+    "baseUrl": "https://api.ailabtools.com/v1",
+    "playground": {
+      "enabled": true
+    }
+  }
+}
+```
+
+### 方案2: 使用Field组件
+
+尝试在API文档中使用Field组件而不是表格：
 
 ```mdx
 <Field name="image" type="string" required>
@@ -66,33 +105,37 @@ Base64编码的图片数据，支持PNG、JPG、JPEG格式
 </Field>
 ```
 
-这个配置：
-- 使用`<Field>`组件定义参数
-- 指定参数名称、类型和是否必需
-- 提供参数描述
+### 方案3: 使用OpenAPI规范
 
-## Try It 功能特性
+创建OpenAPI规范文件并在配置中引用：
 
-### 1. API密钥管理
-- 用户可以在Try It界面中输入API密钥
-- 支持Bearer Token格式
-- 安全的密钥存储（仅在浏览器中）
-
-### 2. 参数输入
-- 自动生成表单字段
-- 必填参数验证
-- 文本输入支持
-- 参数描述显示
-
-### 3. 请求构建
-- 自动构建完整的请求URL
-- 正确设置请求头
-- JSON格式的请求体
-
-### 4. 响应展示
-- 格式化的JSON响应
-- 状态码显示
-- 错误信息展示
+```yaml
+# openapi.yaml
+openapi: 3.0.0
+info:
+  title: AILabTools API
+  version: 1.0.0
+paths:
+  /hairstyle-editor-pro:
+    post:
+      summary: 发型编辑Pro
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  description: Base64编码的图片数据
+                hairstyle:
+                  type: string
+                  description: 发型类型
+                hair_color:
+                  type: string
+                  description: 发色
+```
 
 ## 使用指南
 
@@ -102,127 +145,53 @@ Base64编码的图片数据，支持PNG、JPG、JPEG格式
    - 访问 [AILabTools控制台](https://console.ailabtools.com)
    - 生成新的API密钥
 
-2. **使用Try It功能**
-   - 在API文档页面点击"Try It"
-   - 输入您的API密钥（格式：Bearer YOUR_API_KEY）
-   - 填写必要的参数
-   - 点击"Send"发送请求
+2. **使用API文档**
+   - 查看参数说明和示例代码
+   - 参考错误码和处理方式
+   - 使用提供的代码示例进行集成
 
-3. **查看响应**
-   - 查看实时响应结果
-   - 分析响应状态和内容
-   - 复制响应数据用于开发
+3. **手动测试API**
+   - 使用curl命令测试API
+   - 使用Postman或其他API测试工具
+   - 参考示例代码进行开发
 
 ### 对于文档维护者
 
-1. **添加新的API端点**
-   - 创建新的MDX文件
-   - 使用正确的frontmatter格式
-   - 使用`<Field>`组件定义参数
-
-2. **更新现有API**
+1. **更新API文档**
    - 修改参数定义
    - 更新示例代码
    - 确保描述准确
 
-3. **测试配置**
-   - 验证Try It功能正常工作
-   - 检查参数验证是否正确
-   - 确认示例数据有效
-
-## 配置示例
-
-### 完整的API文档示例
-
-```mdx
----
-title: 发型编辑Pro
-api: "POST /hairstyle-editor-pro"
-description: 编辑人像图片中的发型和颜色
----
-
-# 发型编辑Pro
-
-基于稳定扩散模型，智能编辑人像图片中的发型和颜色。
-
-<RequestExample>
-```bash
-curl -X POST https://api.ailabtools.com/v1/hairstyle-editor-pro \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ...",
-    "hairstyle": "short",
-    "hair_color": "black"
-  }'
-```
-</RequestExample>
-
-<ResponseExample>
-```json
-{
-  "request_id": "req_123456789",
-  "log_id": "log_987654321",
-  "error_code": 0,
-  "result": {
-    "task_id": "task_abcdef123456"
-  }
-}
-```
-</ResponseExample>
-
-## 请求参数
-
-<Field name="image" type="string" required>
-Base64编码的图片数据，支持PNG、JPG、JPEG格式
-</Field>
-
-<Field name="hairstyle" type="string">
-发型类型，详见下方发型选项
-</Field>
-
-<Field name="hair_color" type="string">
-发色，详见下方颜色选项
-</Field>
-```
+2. **测试配置**
+   - 验证文档显示正确
+   - 检查示例代码可用性
+   - 确认错误处理完整
 
 ## 常见问题
 
 ### Q: Try It功能无法正常工作？
-A: 检查以下配置：
-- `mint.json`中的API配置是否正确
-- API端点路径是否正确
-- 参数定义是否使用了`<Field>`组件
+A: 可能的原因：
+- Mintlify版本过旧
+- 配置格式不正确
+- 需要特定的API页面配置
 
 ### Q: 如何添加新的API端点？
 A: 按以下步骤操作：
 1. 创建新的MDX文件
 2. 使用正确的frontmatter格式
-3. 使用`<Field>`组件定义参数
+3. 定义参数表格
 4. 在`mint.json`的导航中添加新页面
 
 ### Q: 如何配置API认证？
-A: Mintlify会自动处理认证，用户需要在Try It界面中手动输入Authorization头：
+A: 当前配置中，用户需要手动添加Authorization头：
 - 格式：`Bearer YOUR_API_KEY`
-- 或者：`Basic base64_encoded_credentials`
+- 在API调用时手动设置
 
 ### Q: 参数输入框没有显示？
-A: 确保：
-- 使用了`<Field>`组件而不是表格
-- 参数名称正确
-- 类型定义正确
-
-### Q: PostHog分析配置错误？
-A: PostHog API密钥必须以`phc_`开头：
-```json
-{
-  "analytics": {
-    "posthog": {
-      "apiKey": "phc_YOUR_ACTUAL_API_KEY"
-    }
-  }
-}
-```
+A: 可能的原因：
+- 需要使用Field组件而不是表格
+- 需要特定的Mintlify配置
+- 可能需要更新Mintlify版本
 
 ## 最佳实践
 
