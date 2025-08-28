@@ -10,7 +10,7 @@
 
 #### `mint.json`
 - **Mintlify主配置**: 使用标准的Mintlify配置文件
-- **API基础配置**: 设置API基础URL和认证方式
+- **API基础配置**: 设置API基础URL
 - **导航结构**: 定义文档的导航和分组
 
 #### API文档文件
@@ -26,19 +26,14 @@
 ```json
 {
   "api": {
-    "baseUrl": "https://api.ailabtools.com/v1",
-    "auth": {
-      "type": "bearer",
-      "name": "Authorization"
-    }
+    "baseUrl": "https://api.ailabtools.com/v1"
   }
 }
 ```
 
 这个配置告诉Mintlify：
 - API的基础URL是`https://api.ailabtools.com/v1`
-- 使用Bearer Token认证
-- 认证头名称为`Authorization`
+- 所有API端点都会基于这个URL构建
 
 ### API端点配置
 
@@ -80,7 +75,7 @@ Base64编码的图片数据，支持PNG、JPG、JPEG格式
 
 ### 1. API密钥管理
 - 用户可以在Try It界面中输入API密钥
-- 自动添加Bearer前缀
+- 支持Bearer Token格式
 - 安全的密钥存储（仅在浏览器中）
 
 ### 2. 参数输入
@@ -109,7 +104,7 @@ Base64编码的图片数据，支持PNG、JPG、JPEG格式
 
 2. **使用Try It功能**
    - 在API文档页面点击"Try It"
-   - 输入您的API密钥（不需要添加Bearer前缀）
+   - 输入您的API密钥（格式：Bearer YOUR_API_KEY）
    - 填写必要的参数
    - 点击"Send"发送请求
 
@@ -206,24 +201,28 @@ A: 按以下步骤操作：
 3. 使用`<Field>`组件定义参数
 4. 在`mint.json`的导航中添加新页面
 
-### Q: 如何自定义认证方式？
-A: 修改`mint.json`中的`api.auth`部分：
-```json
-{
-  "api": {
-    "auth": {
-      "type": "basic",  // 或其他认证方式
-      "name": "Authorization"
-    }
-  }
-}
-```
+### Q: 如何配置API认证？
+A: Mintlify会自动处理认证，用户需要在Try It界面中手动输入Authorization头：
+- 格式：`Bearer YOUR_API_KEY`
+- 或者：`Basic base64_encoded_credentials`
 
 ### Q: 参数输入框没有显示？
 A: 确保：
 - 使用了`<Field>`组件而不是表格
 - 参数名称正确
 - 类型定义正确
+
+### Q: PostHog分析配置错误？
+A: PostHog API密钥必须以`phc_`开头：
+```json
+{
+  "analytics": {
+    "posthog": {
+      "apiKey": "phc_YOUR_ACTUAL_API_KEY"
+    }
+  }
+}
+```
 
 ## 最佳实践
 
