@@ -1,0 +1,211 @@
+---
+title: '发型编辑 API'
+description: '基于稳定扩散模型的发型编辑API，支持多种发型和颜色选择'
+openapi: 'POST /api/portrait/effects/hairstyle-editor-pro'
+---
+
+# 发型编辑 Pro API
+
+基于稳定扩散模型，支持数十种不同的发型和颜色，每个生成的结果都是独特的。可以同时生成多达四张结果图片，方便比较和选择最合适的发型。
+
+## 功能特点
+
+- **多种发型支持**：提供51种不同发型选择，涵盖男士、女士各种风格
+- **丰富发色选择**：支持21种发色，从自然色到时尚色应有尽有
+- **高质量输出**：生成图片分辨率高，细节丰富
+- **异步处理**：支持批量处理，可同时生成多张效果图
+
+## 图片要求
+
+<Warning>
+为了获得最佳效果，请确保上传的图片符合以下要求：
+- 图片中必须包含清晰的人脸
+- 人脸占比应在20%-80%之间
+- 人脸角度不应超过45度
+- 人脸不应被遮挡或模糊
+</Warning>
+
+### 支持的图片格式
+
+- **格式**：PNG、JPG、JPEG
+- **大小**：不超过 3MB
+- **分辨率**：200x200px ~ 1999x1999px
+
+## 发型代码参考
+
+<Tabs>
+<Tab title="男士发型">
+| 代码 | 名称 | 描述 |
+|------|------|------|
+| `BuzzCut` | 寸头 | 经典的寸头发型 |
+| `UnderCut` | 底切发型 | 现代感十足的底切发型 |
+| `Pompadour` | 蓬巴杜发型 | 复古经典的蓬巴杜发型 |
+| `SlickBack` | 背头 | 优雅的背头发型 |
+| `FauxHawk` | 假鹰发型 | 时尚的假鹰发型 |
+| `Spiky` | 刺猬头 | 动感的刺猬头发型 |
+| `CombOver` | 梳背头 | 经典的梳背头 |
+| `ManBun` | 男士发髻 | 现代的男士发髻 |
+| `Afro` | 爆炸头 | 自然的爆炸头发型 |
+| `LowFade` | 低渐变 | 低渐变发型 |
+| `UndercutLongHair` | 底切长发 | 底切长发发型 |
+| `TwoBlockHaircut` | 两段式发型 | 两段式发型 |
+| `TexturedFringe` | 纹理刘海 | 纹理刘海发型 |
+| `BluntBowlCut` | 钝角碗盖头 | 钝角碗盖头 |
+| `LongWavyCurtainBangs` | 长波浪窗帘刘海 | 长波浪窗帘刘海 |
+| `MessyTousled` | 凌乱蓬松 | 凌乱蓬松发型 |
+| `CornrowBraids` | 玉米辫 | 玉米辫发型 |
+| `LongHairTiedUp` | 长发扎起 | 长发扎起 |
+| `Middle-parted` | 中分发型 | 中分发型 |
+</Tab>
+<Tab title="女士发型">
+| 代码 | 名称 | 描述 |
+|------|------|------|
+| `PixieCut` | 精灵头 | 短小精悍的精灵头 |
+| `BobCut` | 波波头 | 经典的波波头 |
+| `LongStraight` | 长直发 | 优雅的长直发 |
+| `LongCurly` | 长卷发 | 浪漫的长卷发 |
+| `Ponytail` | 马尾辫 | 经典的马尾辫 |
+| `TwinBraids` | 双辫子 | 可爱的双辫子 |
+| `FishtailBraid` | 鱼尾辫 | 精致的鱼尾辫 |
+| `Updo` | 盘发 | 正式的盘发 |
+</Tab>
+<Tab title="发色效果">
+| 代码 | 名称 | 描述 |
+|------|------|------|
+| `blonde` | 金发 | 经典的金发 |
+| `brown` | 棕色 | 自然的棕色 |
+| `black` | 黑色 | 经典的黑色 |
+| `red` | 红色 | 热情的红色 |
+| `blue` | 蓝色 | 前卫的蓝色 |
+| `purple` | 紫色 | 神秘的紫色 |
+| `pink` | 粉色 | 甜美的粉色 |
+| `gradient` | 渐变 | 时尚的渐变发色 |
+</Tab>
+</Tabs>
+
+## 示例代码
+
+<Tabs>
+<Tab title="cURL">
+```bash
+curl -X POST "https://www.ailabapi.com/api/portrait/effects/hairstyle-editor-pro" \
+  -H "ailabapi-api-key: YOUR_API_KEY" \
+  -F "image=@/path/to/your/image.jpg" \
+  -F "hair_style=BuzzCut" \
+  -F "task_type=async"
+```
+</Tab>
+<Tab title="JavaScript">
+```javascript
+const formData = new FormData();
+formData.append('image', imageFile);
+formData.append('hair_style', 'BuzzCut');
+formData.append('task_type', 'async');
+
+const response = await fetch('https://www.ailabapi.com/api/portrait/effects/hairstyle-editor-pro', {
+  method: 'POST',
+  headers: {
+    'ailabapi-api-key': 'YOUR_API_KEY'
+  },
+  body: formData
+});
+
+const result = await response.json();
+console.log(result);
+```
+</Tab>
+<Tab title="Python">
+```python
+import requests
+
+url = "https://www.ailabapi.com/api/portrait/effects/hairstyle-editor-pro"
+headers = {
+    "ailabapi-api-key": "YOUR_API_KEY"
+}
+
+files = {
+    "image": open("image.jpg", "rb")
+}
+
+data = {
+    "hair_style": "BuzzCut",
+    "task_type": "async"
+}
+
+response = requests.post(url, headers=headers, files=files, data=data)
+result = response.json()
+print(result)
+```
+</Tab>
+</Tabs>
+
+## 响应示例
+
+### 成功响应
+
+```json
+{
+  "request_id": "123456789",
+  "log_id": "987654321",
+  "error_code": 0,
+  "error_msg": "",
+  "error_detail": {
+    "status_code": 200,
+    "code": "",
+    "code_message": "",
+    "message": ""
+  },
+  "task_id": "task_123456789",
+  "result": [
+    "https://example.com/result1.jpg",
+    "https://example.com/result2.jpg",
+    "https://example.com/result3.jpg",
+    "https://example.com/result4.jpg"
+  ]
+}
+```
+
+### 错误响应
+
+```json
+{
+  "request_id": "123456789",
+  "log_id": "987654321",
+  "error_code": 422,
+  "error_msg": "No face detected in the file",
+  "error_detail": {
+    "status_code": 422,
+    "code": "ERROR_NO_FACE_IN_FILE",
+    "code_message": "No face detected in the file",
+    "message": "pic not has face"
+  }
+}
+```
+
+## 异步处理流程
+
+对于异步任务，完整的处理流程如下：
+
+1. **提交任务**：调用 API 提交处理任务
+2. **获取 task_id**：API 返回 task_id
+3. **查询结果**：使用 task_id 查询处理结果
+4. **获取最终结果**：当任务完成时获取最终结果
+
+<Tip>
+  异步任务结果有效期为 24 小时，建议每 5 秒查询一次结果。
+</Tip>
+
+## 最佳实践
+
+1. **图片预处理**：在上传前对图片进行适当的裁剪和调整
+2. **前端验证**：使用人脸分析 API 预先验证图片质量
+3. **错误处理**：实现完善的错误处理机制
+4. **缓存策略**：对相同参数的请求结果进行缓存
+
+## 相关链接
+
+- [人脸分析 API](/api-reference/face-analysis)
+- [异步任务查询 API](/api-reference/async-task-results)
+- [错误处理](/essentials/error-handling)
+- [最佳实践](/essentials/best-practices)
+- [在线体验](https://www.ailabtools.com/portrait-hairstyle-editing-pro-example)

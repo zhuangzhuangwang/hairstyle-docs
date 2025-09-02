@@ -1,263 +1,156 @@
 ---
-title: 图片要求
-description: AILabTools API图片上传要求和最佳实践
+title: '图片要求'
+description: '为了确保 API 能够正常处理您的图片，请确保上传的图片符合以下要求。'
+icon: "image"
 ---
 
-# 图片要求
 
-为了获得最佳的AI处理效果，请确保您上传的图片符合以下要求。
+## 📎 基本要求
 
-## 基本要求
+| 项目 | 要求 | 推荐 |
+|------|------|------|
+| **文件格式** | PNG、JPG、JPEG | JPG（文件较小） |
+| **文件大小** | 最大3MB | 1MB以下 |
+| **分辨率** | 200x200 ~ 1999x1999px | 512x512px |
 
-### 图片格式
+## 👤 人脸要求
+<Columns cols={2}>
+  <Card title="人脸完整性" >
+    <div>
+      <ul>
+        <li>图片中必须包含清晰的人脸</li>
+        <li>人脸不应被遮挡（如口罩、墨镜等）</li>
+        <li>人脸不应被裁剪或模糊</li>
+      </ul>
+    </div>
+  </Card>
+  <Card title="人脸占比 & 角度">
+    <div>
+      <table>
+        <tr><td><strong>占比范围</strong></td><td>20% ~ 80%</td></tr>
+        <tr><td><strong>偏航角</strong></td><td>±45°</td></tr>
+        <tr><td><strong>俯仰角</strong></td><td>±30°</td></tr>
+      </table>
+    </div>
+  </Card>
+</Columns>
 
-支持以下图片格式：
-- **PNG** - 推荐用于需要透明背景的场景
-- **JPG** - 推荐用于一般用途，文件较小
-- **JPEG** - 与JPG相同
+## 🌅 图片质量要求
 
-<Note>
-建议使用JPG格式，因为它提供了良好的压缩率和兼容性。
-</Note>
+<Columns cols={2}>
+  <Card title="☀️ 光线条件" >
+    <div>
+      <ul>
+        <li>光线充足，避免过暗或过亮</li>
+        <li>避免强烈的逆光或阴影</li>
+        <li>确保人脸清晰可见</li>
+      </ul>
+    </div>
+  </Card>
+  <Card title="🌆 背景要求">
+    <div>
+      <ul>
+        <li>背景简洁，避免复杂图案</li>
+        <li>避免与肤色相近的背景色</li>
+        <li>确保人脸与背景有足够对比度</li>
+      </ul>
+    </div>
+  </Card>
+</Columns>
 
-### 图片大小
+## 🖼️ 示例图片
 
-- **最大文件大小**: 3MB
-- **推荐文件大小**: 1MB以下
+<div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px'}}>
+  <div>
+    <h3 style={{color: '#22c55e'}}>✅ 有效图片示例</h3>
+    <div style={{display: 'grid', gap: '15px'}}>
+      <div style={{border: '2px solid #22c55e', borderRadius: '8px', padding: '10px', textAlign: 'center'}}>
+        <img src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/valid-1.webp" alt="有效图片1" style={{width: '100px', height: '100px', objectFit: 'cover', borderRadius: '4px'}} />
+        <p style={{margin: '8px 0 0 0', fontSize: '14px'}}>清晰人脸，角度合适，光线充足</p>
+      </div>
+      <div style={{border: '2px solid #22c55e', borderRadius: '8px', padding: '10px', textAlign: 'center'}}>
+        <img src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/valid-2.webp" alt="有效图片2" style={{width: '100px', height: '100px', objectFit: 'cover', borderRadius: '4px'}} />
+        <p style={{margin: '8px 0 0 0', fontSize: '14px'}}>人脸占比适中，背景简洁</p>
+      </div>
+    </div>
+  </div>
+  <div>
+    <h3 style={{color: '#ef4444'}}>❌ 无效图片示例</h3>
+    <div style={{display: 'grid', gap: '15px'}}>
+      <div style={{border: '2px solid #ef4444', borderRadius: '8px', padding: '10px', textAlign: 'center'}}>
+        <img src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/no-face-1.webp" alt="无效图片1" style={{width: '100px', height: '100px', objectFit: 'cover', borderRadius: '4px'}} />
+        <p style={{margin: '8px 0 0 0', fontSize: '14px', color: '#ef4444'}}>无人脸或人脸不清晰</p>
+      </div>
+      <div style={{border: '2px solid #ef4444', borderRadius: '8px', padding: '10px', textAlign: 'center'}}>
+        <img src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/face-incomplete-1.webp" alt="无效图片2" style={{width: '100px', height: '100px', objectFit: 'cover', borderRadius: '4px'}} />
+        <p style={{margin: '8px 0 0 0', fontSize: '14px', color: '#ef4444'}}>人脸不完整或被遮挡</p>
+      </div>
+      <div style={{border: '2px solid #ef4444', borderRadius: '8px', padding: '10px', textAlign: 'center'}}>
+        <img src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/face-blocked-1.webp" alt="无效图片3" style={{width: '100px', height: '100px', objectFit: 'cover', borderRadius: '4px'}} />
+        <p style={{margin: '8px 0 0 0', fontSize: '14px', color: '#ef4444'}}>人脸被遮挡或模糊</p>
+      </div>
+    </div>
+  </div>
+</div>
 
-<Warning>
-超过3MB的图片将被拒绝处理。如果您的图片过大，请使用图片压缩工具减小文件大小。
-</Warning>
+## ⚠️ 常见错误
 
-### 图片分辨率
-
-- **最小分辨率**: 200x200像素
-- **最大分辨率**: 1999x1999像素
-- **推荐分辨率**: 800x800像素到1200x1200像素
-
-## 人脸要求
-
-### 人脸数量
-
-- **要求**: 图片中必须包含且仅包含一个人脸
-- **不允许**: 多个人脸、动物脸、卡通脸
-
-### 人脸清晰度
-
-- **要求**: 人脸清晰可见，五官分明
-- **避免**: 模糊、过度曝光、严重阴影的人脸
-
-### 人脸角度
-
-- **最大角度**: 30度（相对于正面）
-- **推荐角度**: 正面或接近正面
-- **避免**: 侧面、背面、过度倾斜的人脸
-
-### 人脸占比
-
-- **最小占比**: 图片面积的10%
-- **推荐占比**: 20%-50%
-- **避免**: 人脸过小或过大
-
-## 图片质量要求
-
-### 光线条件
-
-- **推荐**: 自然光或均匀的人工光源
-- **避免**: 强逆光、严重阴影、过度曝光
-
-### 背景要求
-
-- **推荐**: 简洁、不复杂的背景
-- **避免**: 过于复杂或与肤色相近的背景
-
-### 表情要求
-
-- **推荐**: 自然、中性的表情
-- **避免**: 夸张的表情、张嘴、闭眼
-
-## 最佳实践
-
-### 1. 拍摄建议
-
-<Grid cols={2}>
-<Card title="✅ 推荐做法">
-- 使用自然光线
-- 保持正面角度
-- 确保人脸清晰
-- 使用简洁背景
-- 保持自然表情
-</Card>
-
-<Card title="❌ 避免做法">
-- 强逆光拍摄
-- 侧面或背面
-- 模糊或抖动
-- 复杂背景
-- 夸张表情
-</Card>
-</Grid>
-
-### 2. 图片预处理
-
-在上传前，建议进行以下预处理：
-
-```javascript
-// JavaScript示例：图片预处理
-function preprocessImage(file) {
-  return new Promise((resolve) => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-    
-    img.onload = function() {
-      // 调整分辨率
-      const maxSize = 1200;
-      let { width, height } = img;
-      
-      if (width > maxSize || height > maxSize) {
-        if (width > height) {
-          height = (height * maxSize) / width;
-          width = maxSize;
-        } else {
-          width = (width * maxSize) / height;
-          height = maxSize;
-        }
-      }
-      
-      canvas.width = width;
-      canvas.height = height;
-      
-      // 绘制图片
-      ctx.drawImage(img, 0, 0, width, height);
-      
-      // 转换为Blob
-      canvas.toBlob((blob) => {
-        resolve(blob);
-      }, 'image/jpeg', 0.8);
-    };
-    
-    img.src = URL.createObjectURL(file);
-  });
+<Card title="❎ 文件格式错误" >
+```json
+{
+  "error_code": 400,
+  "error_msg": "Invalid file format",
+  "error_detail": {
+    "code": "ERROR_INVALID_FILE_FORMAT",
+    "message": "Only PNG, JPG, JPEG formats are supported"
+  }
 }
 ```
-
-```python
-# Python示例：图片预处理
-from PIL import Image
-import io
-
-def preprocess_image(image_path, output_path):
-    """预处理图片"""
-    with Image.open(image_path) as img:
-        # 转换为RGB模式
-        if img.mode != 'RGB':
-            img = img.convert('RGB')
-        
-        # 调整分辨率
-        max_size = 1200
-        if max(img.size) > max_size:
-            img.thumbnail((max_size, max_size), Image.Resampling.LANCZOS)
-        
-        # 保存为JPEG格式
-        img.save(output_path, 'JPEG', quality=85, optimize=True)
-```
-
-### 3. 验证图片
-
-在上传前验证图片是否符合要求：
-
-```javascript
-// JavaScript示例：图片验证
-function validateImage(file) {
-  return new Promise((resolve, reject) => {
-    // 检查文件大小
-    if (file.size > 3 * 1024 * 1024) {
-      reject(new Error('图片大小不能超过3MB'));
-      return;
-    }
-    
-    // 检查文件类型
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    if (!allowedTypes.includes(file.type)) {
-      reject(new Error('只支持JPG、JPEG、PNG格式'));
-      return;
-    }
-    
-    // 检查图片尺寸
-    const img = new Image();
-    img.onload = function() {
-      const { width, height } = img;
-      
-      if (width < 200 || height < 200) {
-        reject(new Error('图片分辨率不能小于200x200像素'));
-        return;
-      }
-      
-      if (width > 1999 || height > 1999) {
-        reject(new Error('图片分辨率不能大于1999x1999像素'));
-        return;
-      }
-      
-      resolve(true);
-    };
-    
-    img.onerror = () => reject(new Error('无法读取图片'));
-    img.src = URL.createObjectURL(file);
-  });
+</Card>
+<Card title="🚫 无人脸检测" >
+```json
+{
+  "error_code": 422,
+  "error_msg": "No face detected",
+  "error_detail": {
+    "code": "ERROR_NO_FACE_IN_FILE",
+    "message": "No face detected in the file"
+  }
 }
 ```
+</Card>
+<Card title="📦 文件大小超限" >
+```json
+{
+  "error_code": 400,
+  "error_msg": "File too large",
+  "error_detail": {
+    "code": "ERROR_FILE_TOO_LARGE",
+    "message": "File size exceeds 3MB limit"
+  }
+}
+```
+</Card>
 
-## 常见问题
+## 💡 最佳实践
 
-<Accordion>
-<AccordionItem title="为什么我的图片被拒绝了？">
-常见原因包括：
-- 图片大小超过3MB
-- 图片分辨率不符合要求
-- 未检测到人脸或检测到多个人脸
-- 人脸角度过大
-- 人脸占比过小
+<div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '15px'}}>
+  <div style={{padding: '15px', border: '1px solid #e5e7eb', borderRadius: '8px', backgroundColor: '#f9fafb'}}>
+    <h4>🔍 预处理图片</h4>
+    <p>在上传前对图片进行适当的裁剪和调整</p>
+  </div>
+  <div style={{padding: '15px', border: '1px solid #e5e7eb', borderRadius: '8px', backgroundColor: '#f9fafb'}}>
+    <h4>✅ 检查质量</h4>
+    <p>确保图片清晰，人脸完整可见</p>
+  </div>
+  <div style={{padding: '15px', border: '1px solid #e5e7eb', borderRadius: '8px', backgroundColor: '#f9fafb'}}>
+    <h4>🧪 测试验证</h4>
+    <p>使用人脸分析 API 预先验证图片质量</p>
+  </div>
+  <div style={{padding: '15px', border: '1px solid #e5e7eb', borderRadius: '8px', backgroundColor: '#f9fafb'}}>
+    <h4>📦 批量处理</h4>
+    <p>对于批量处理，确保所有图片都符合要求</p>
+  </div>
+</div>
 
-建议使用我们的人脸分析API进行预验证。
-</AccordionItem>
-
-<AccordionItem title="如何处理大图片？">
-可以使用图片压缩工具：
-- 在线工具：TinyPNG、Compressor.io
-- 桌面软件：Photoshop、GIMP
-- 编程库：PIL、Sharp等
-</AccordionItem>
-
-<AccordionItem title="支持哪些图片格式？">
-目前支持PNG、JPG、JPEG格式。推荐使用JPG格式以获得最佳兼容性。
-</AccordionItem>
-
-<AccordionItem title="如何处理模糊的图片？">
-模糊的图片可能影响处理效果。建议：
-- 使用更清晰的原始图片
-- 避免过度压缩
-- 确保拍摄时相机稳定
-</AccordionItem>
-</Accordion>
-
-## 工具推荐
-
-### 在线工具
-- [TinyPNG](https://tinypng.com/) - 图片压缩
-- [Canva](https://canva.com/) - 图片编辑
-- [Remove.bg](https://remove.bg/) - 背景移除
-
-### 桌面软件
-- **Photoshop** - 专业图片编辑
-- **GIMP** - 免费图片编辑
-- **Paint.NET** - 轻量级图片编辑
-
-### 编程库
-- **JavaScript**: Canvas API, Sharp
-- **Python**: PIL/Pillow, OpenCV
-- **Node.js**: Sharp, Jimp
-
-<CTA href="/api/face-analysis">
-  使用人脸分析API验证图片
-</CTA>
+---

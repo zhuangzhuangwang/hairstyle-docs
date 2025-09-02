@@ -1,0 +1,206 @@
+---
+title: '人脸分析 API'
+description: '分析图片中的人脸信息，包括人脸数量、位置、角度等'
+openapi: 'POST /api/portrait/analysis/face-analysis'
+---
+
+# 人脸分析 API
+
+分析图片中的人脸信息，包括人脸数量、位置、角度等，用于前端验证和图片质量检查。
+
+## 功能特点
+
+- **人脸检测**：准确检测图片中的人脸数量
+- **位置分析**：获取人脸在图片中的精确位置
+- **角度分析**：分析人脸的偏航角、俯仰角、翻滚角
+- **比例计算**：计算人脸在图片中的占比
+- **质量评估**：评估图片是否适合发型编辑
+
+## 应用场景
+
+- **前端验证**：在用户上传图片前进行质量检查
+- **图片预处理**：根据人脸位置进行智能裁剪
+- **质量筛选**：过滤不符合要求的图片
+- **用户体验**：提供即时的图片质量反馈
+
+## 图片要求
+
+<Warning>
+为了获得准确的检测结果，请确保上传的图片符合以下要求：
+- 图片中必须包含清晰的人脸
+- 人脸不应被严重遮挡或模糊
+- 光线充足，避免过暗或过亮
+- 图片分辨率建议不低于 200x200 像素
+</Warning>
+
+### 支持的图片格式
+
+- **格式**：PNG、JPG、JPEG
+- **大小**：不超过 3MB
+- **分辨率**：200x200px ~ 1999x1999px
+
+
+## 响应示例（异步任务查询API获取）
+
+### 成功响应
+
+```json
+{
+  "request_id": "123456789",
+  "log_id": "987654321",
+  "error_code": 0,
+  "error_msg": "",
+  "error_detail": {
+    "status_code": 200,
+    "code": "",
+    "code_message": "",
+    "message": ""
+  },
+  "result": {
+    "face_num": 1,
+    "face_info": [
+      {
+        "face_rect": {
+          "left": 100,
+          "top": 50,
+          "width": 200,
+          "height": 250
+        },
+        "face_angle": {
+          "yaw": 5.2,
+          "pitch": -2.1,
+          "roll": 1.8
+        },
+        "face_proportion": 0.35
+      }
+    ]
+  }
+}
+```
+
+### 错误响应
+
+```json
+{
+  "request_id": "123456789",
+  "log_id": "987654321",
+  "error_code": 422,
+  "error_msg": "No face detected in the file",
+  "error_detail": {
+    "status_code": 422,
+    "code": "ERROR_NO_FACE_IN_FILE",
+    "code_message": "No face detected in the file",
+    "message": "pic not has face"
+  }
+}
+```
+
+## 响应字段说明
+
+### 主要字段
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `face_num` | integer | 检测到的人脸数量 |
+| `face_info` | array | 人脸信息数组 |
+
+### 人脸信息字段
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `face_rect` | object | 人脸矩形区域 |
+| `face_angle` | object | 人脸角度信息 |
+| `face_proportion` | number | 人脸占比 |
+
+### 矩形区域字段
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `left` | integer | 左边界坐标 |
+| `top` | integer | 上边界坐标 |
+| `width` | integer | 宽度 |
+| `height` | integer | 高度 |
+
+### 角度字段
+
+| 字段 | 类型 | 说明 | 有效范围 |
+|------|------|------|----------|
+| `yaw` | number | 偏航角（左右转动） | ±45° |
+| `pitch` | number | 俯仰角（上下点头） | ±30° |
+| `roll` | number | 翻滚角（左右倾斜） | ±30° |
+
+## 验证标准
+
+### 人脸数量验证
+
+```javascript
+// 检查人脸数量
+if (result.result.face_num === 0) {
+  throw new Error('未检测到人脸');
+} else if (result.result.face_num > 1) {
+  throw new Error('检测到多个人脸，请使用单人照片');
+}
+```
+
+### 人脸占比验证
+
+```javascript
+// 检查人脸占比
+const faceInfo = result.result.face_info[0];
+const faceProportion = faceInfo.face_proportion;
+
+if (faceProportion < 0.2) {
+  throw new Error('人脸占比过小，请使用更近的照片');
+} else if (faceProportion > 0.8) {
+  throw new Error('人脸占比过大，请使用更远的照片');
+}
+```
+
+### 人脸角度验证
+
+```javascript
+// 检查人脸角度
+const { yaw, pitch, roll } = faceInfo.face_angle;
+
+if (Math.abs(yaw) > 45 || Math.abs(pitch) > 30 || Math.abs(roll) > 30) {
+  throw new Error('人脸角度过大，请使用正面照片');
+}
+```
+
+## 最佳实践
+
+### 1. 前端验证流程
+
+```javascript
+async function validateImage(imageFile) {
+  // 1. 调用人脸分析 API
+  const analysisResult = await analyzeFace(imageFile);
+  
+  // 2. 检查人脸数量
+  if (analysisResult.face_num !== 1) {
+    throw new Error('请使用包含且仅包含一个人脸的照片');
+  }
+  
+  // 3. 检查人脸占比
+  const faceInfo = analysisResult.face_info[0];
+  if (faceInfo.face_proportion < 0.2 || faceInfo.face_proportion > 0.8) {
+    throw new Error('人脸占比应在20%-80%之间');
+  }
+  
+  // 4. 检查人脸角度
+  const { yaw, pitch, roll } = faceInfo.face_angle;
+  if (Math.abs(yaw) > 45 || Math.abs(pitch) > 30 || Math.abs(roll) > 30) {
+    throw new Error('请使用正面照片，人脸角度不应过大');
+  }
+  
+  return true;
+}
+```
+
+
+## 相关链接
+
+- [发型编辑 Pro API](/api-reference/hairstyle-editor-pro)
+- [异步任务查询 API](/api-reference/async-task-results)
+- [图片要求](/essentials/image-requirements)
+- [错误处理](/essentials/error-handling)

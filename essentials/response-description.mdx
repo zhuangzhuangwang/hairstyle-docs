@@ -1,194 +1,194 @@
 ---
-title: '响应字段说明'
-description: 'API响应字段和错误码说明'
+title: '响应说明'
+description: '了解AI发型设计 API的响应格式和错误代码'
+icon: 'message'
 ---
 
-# 响应字段说明
+# AI发型设计 - 响应说明
 
 ## 公共响应字段
 
-| 字段 | 必填 | 类型 | 描述 |
-|:-----|:-----|:-----|:-----|
-| `request_id` | 是 | `string` | 请求ID。如果出现问题无法定位，可以将此字段发送给技术支持进行问题定位。 |
-| `log_id` | 是 | `string` | 日志ID。如果出现问题无法定位，可以将此字段发送给技术支持进行问题定位。 |
-| `error_code` | 是 | `integer` | 状态码。当HTTP状态为200时：error_code=0；否则与HTTP状态完全相同。 |
-| `error_detail` | 是 | `object` | 错误详情。 |
-| +`status_code` | 是 | `integer` | 状态码。 |
-| +`code` | 是 | `string` | 错误代码。 |
-| +`code_message` | 是 | `string` | 错误代码表示的信息。 |
-| +`message` | 是 | `string` | `code_message`字段的补充信息。 |
+| 字段             | 必填     | 类型      | 范围                      | 描述                                                                     |
+|:----------------|:---------|:----------|:---------------------------|:----------------------------------------------------------------------|
+| `request_id`    | 是       | `string`  |                            | 请求ID。 <li>如果出现问题无法定位，可以将此字段发送给技术支持进行问题定位。</li>  |
+| `log_id`        | 是       | `string`  |                            | 日志ID。 <li>如果出现问题无法定位，可以将此字段发送给技术支持进行问题定位。</li>  |
+| `error_code`    | 是       | `integer` |                            | 状态码。 <li>当HTTP状态为200时：error_code=0；否则与HTTP状态完全相同。</li>   |
+| `error_detail`  | 是       | `object`  |                            | 错误详情。                                                              |
+| +`status_code`  | 是       | `integer` |                            | 状态码。                                                                |
+| +`code`         | 是       | `string`  | [查看](#error-detail-code)  | 错误代码。                                                              |
+| +`code_message` | 是       | `string`  |                            | 错误代码(`code`)表示的信息。                                              |
+| +`message`      | 是       | `string`  |                            | `code_message`字段的补充信息。                                           |
 
 ## 如何验证请求是否成功？
 
 <Warning>
+
 - 使用HTTP状态码：
-  - **200**: 成功
-  - **其他**: 失败
+  - **200**: 成功。
+  - **其他**: 失败。
 - 使用`error_code`字段：
-  - **0**: 成功
-  - **其他**: 失败
+  - **0**: 成功。
+  - **其他**: 失败。
+
 </Warning>
 
-## 成功响应示例
-
+<Card title="成功响应示例">
 ```json
 {
-  "request_id": "Request ID",
-  "log_id": "Log ID",
-  "error_code": 0,
+  "request_id":   "请求ID",
+  "log_id":       "日志ID",
+  "error_code":   0,
   "error_detail": {
-    "status_code": 200,
-    "code": "",
+    "status_code":  200,
+    "code":         "",
     "code_message": "",
-    "message": ""
+    "message":      ""
   }
 }
 ```
+</Card>
 
-## 失败响应示例
-
+<Card title="失败响应示例">
 ```json
 {
-  "request_id": "Request ID",
-  "log_id": "Log ID",
-  "error_code": 422,
+  "request_id":   "请求ID",
+  "log_id":       "日志ID",
+  "error_code":   422,
   "error_detail": {
-    "status_code": 422,
-    "code": "ERROR_NO_FACE_IN_FILE",
-    "code_message": "No face detected in the file.",
-    "message": "pic not has face"
+    "status_code":  422,
+    "code":         "ERROR_NO_FACE_IN_FILE",
+    "code_message": "文件中未检测到人脸。",
+    "message":      "图片中没有人脸"
   }
 }
 ```
+</Card>
 
-## 常见错误代码
+## `error_detail.code` 解析
 
-| HTTP状态 | 错误代码 | 描述 |
-|:---------|:---------|:-----|
-| 400 | `PROCESSING_FAILURE` | 处理失败 |
-| 400 | `ERROR_PARAMETERS` | 无效参数 |
-| 400 | `MISSING_PARAMETERS` | 缺少参数 |
-| 400 | `ERROR_INVALID_PARAMETER` | 无效参数 |
-| 400 | `PARAMETERS_CANNOT_EMPTY` | 参数不能为空 |
-| 400 | `ERROR_TOO_MANY_FILES` | 文件数量超出限制 |
-| 400 | `ERROR_FACE_TRACE_LIMIT_EXCEEDED` | 人脸或追踪限制超出 |
-| 400 | `ERROR_INVALID_URL` | 无效URL |
-| 400 | `ERROR_FILE_DOWNLOAD_FAILED` | 文件下载失败 |
-| 400 | `ERROR_FILE_UPLOAD_FAILED` | 文件上传失败 |
-| 400 | `FILE_DECODING_FAILURE` | 文件解码失败 |
-| 422 | `ERROR_NO_FACE_IN_FILE` | 文件中未检测到人脸 |
-| 422 | `ERROR_MULTIPLE_FACES_IN_FILE` | 文件中检测到多个人脸 |
-| 422 | `ERROR_FACE_TOO_SMALL` | 人脸太小 |
-| 422 | `ERROR_FACE_TOO_LARGE` | 人脸太大 |
-| 422 | `ERROR_FACE_ANGLE_TOO_LARGE` | 人脸角度过大 |
-| 422 | `ERROR_FACE_OCCLUDED` | 人脸被遮挡 |
-| 422 | `ERROR_FACE_BLURRY` | 人脸模糊 |
-| 422 | `ERROR_FACE_INCOMPLETE` | 人脸不完整 |
-| 422 | `ERROR_FACE_NOT_FRONTAL` | 人脸不是正面 |
-| 422 | `ERROR_FACE_NOT_CENTERED` | 人脸未居中 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE` | 人脸大小不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE` | 人脸角度不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING` | 人脸光线不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION` | 人脸表情不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_QUALITY` | 人脸质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_FORMAT` | 人脸格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_RESOLUTION` | 人脸分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_RATIO` | 人脸大小比例不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_RATIO` | 人脸角度比例不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_RATIO` | 人脸光线比例不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION_RATIO` | 人脸表情比例不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_QUALITY_RATIO` | 人脸质量比例不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_FORMAT_RATIO` | 人脸格式比例不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_RESOLUTION_RATIO` | 人脸分辨率比例不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE` | 人脸大小角度不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING` | 人脸大小光线不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_EXPRESSION` | 人脸大小表情不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_QUALITY` | 人脸大小质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_FORMAT` | 人脸大小格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_RESOLUTION` | 人脸大小分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING` | 人脸角度光线不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_EXPRESSION` | 人脸角度表情不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_QUALITY` | 人脸角度质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_FORMAT` | 人脸角度格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_RESOLUTION` | 人脸角度分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_EXPRESSION` | 人脸光线表情不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_QUALITY` | 人脸光线质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_FORMAT` | 人脸光线格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_RESOLUTION` | 人脸光线分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION_QUALITY` | 人脸表情质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION_FORMAT` | 人脸表情格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION_RESOLUTION` | 人脸表情分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_QUALITY_FORMAT` | 人脸质量格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_QUALITY_RESOLUTION` | 人脸质量分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_FORMAT_RESOLUTION` | 人脸格式分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING` | 人脸大小角度光线不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_EXPRESSION` | 人脸大小角度表情不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_QUALITY` | 人脸大小角度质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_FORMAT` | 人脸大小角度格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_RESOLUTION` | 人脸大小角度分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_EXPRESSION` | 人脸大小光线表情不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_QUALITY` | 人脸大小光线质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_FORMAT` | 人脸大小光线格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_RESOLUTION` | 人脸大小光线分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_EXPRESSION_QUALITY` | 人脸大小表情质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_EXPRESSION_FORMAT` | 人脸大小表情格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_EXPRESSION_RESOLUTION` | 人脸大小表情分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_QUALITY_FORMAT` | 人脸大小质量格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_QUALITY_RESOLUTION` | 人脸大小质量分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_FORMAT_RESOLUTION` | 人脸大小格式分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_EXPRESSION` | 人脸角度光线表情不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_QUALITY` | 人脸角度光线质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_FORMAT` | 人脸角度光线格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_RESOLUTION` | 人脸角度光线分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_EXPRESSION_QUALITY` | 人脸角度表情质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_EXPRESSION_FORMAT` | 人脸角度表情格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_EXPRESSION_RESOLUTION` | 人脸角度表情分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_QUALITY_FORMAT` | 人脸角度质量格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_QUALITY_RESOLUTION` | 人脸角度质量分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_FORMAT_RESOLUTION` | 人脸角度格式分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_EXPRESSION_QUALITY` | 人脸光线表情质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_EXPRESSION_FORMAT` | 人脸光线表情格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_EXPRESSION_RESOLUTION` | 人脸光线表情分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_QUALITY_FORMAT` | 人脸光线质量格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_QUALITY_RESOLUTION` | 人脸光线质量分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_FORMAT_RESOLUTION` | 人脸光线格式分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION_QUALITY_FORMAT` | 人脸表情质量格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION_QUALITY_RESOLUTION` | 人脸表情质量分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_EXPRESSION_FORMAT_RESOLUTION` | 人脸表情格式分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_QUALITY_FORMAT_RESOLUTION` | 人脸质量格式分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION` | 人脸大小角度光线表情不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_QUALITY` | 人脸大小角度光线质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_FORMAT` | 人脸大小角度光线格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_RESOLUTION` | 人脸大小角度光线分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_EXPRESSION_QUALITY` | 人脸大小角度表情质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_EXPRESSION_FORMAT` | 人脸大小角度表情格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_EXPRESSION_RESOLUTION` | 人脸大小角度表情分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_QUALITY_FORMAT` | 人脸大小角度质量格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_QUALITY_RESOLUTION` | 人脸大小角度质量分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_EXPRESSION_QUALITY` | 人脸大小光线表情质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_EXPRESSION_FORMAT` | 人脸大小光线表情格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_EXPRESSION_RESOLUTION` | 人脸大小光线表情分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_QUALITY_FORMAT` | 人脸大小光线质量格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_LIGHTING_QUALITY_RESOLUTION` | 人脸大小光线质量分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_EXPRESSION_QUALITY_FORMAT` | 人脸大小表情质量格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_EXPRESSION_QUALITY_RESOLUTION` | 人脸大小表情质量分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_EXPRESSION_QUALITY` | 人脸角度光线表情质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_EXPRESSION_FORMAT` | 人脸角度光线表情格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_EXPRESSION_RESOLUTION` | 人脸角度光线表情分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_QUALITY_FORMAT` | 人脸角度光线质量格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_QUALITY_RESOLUTION` | 人脸角度光线质量分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_EXPRESSION_QUALITY_FORMAT` | 人脸角度表情质量格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_EXPRESSION_QUALITY_RESOLUTION` | 人脸角度表情质量分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_EXPRESSION_QUALITY_FORMAT` | 人脸光线表情质量格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_LIGHTING_EXPRESSION_QUALITY_RESOLUTION` | 人脸光线表情质量分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY` | 人脸大小角度光线表情质量不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_FORMAT` | 人脸大小角度光线表情格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_RESOLUTION` | 人脸大小角度光线表情分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_QUALITY_FORMAT` | 人脸大小角度光线质量格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_QUALITY_RESOLUTION` | 人脸大小角度光线质量分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_EXPRESSION_QUALITY_FORMAT` | 人脸大小角度表情质量格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_EXPRESSION_QUALITY_RESOLUTION` | 人脸大小角度表情质量分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_EXPRESSION_QUALITY_FORMAT` | 人脸角度光线表情质量格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_ANGLE_LIGHTING_EXPRESSION_QUALITY_RESOLUTION` | 人脸角度光线表情质量分辨率不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY_FORMAT` | 人脸大小角度光线表情质量格式不合适 |
-| 422 | `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY_RESOLUTION` | 人脸大小角度光线表情质量分辨率不合适 |
+| HTTP状态 | 错误代码                                       | 描述                                                                                         |
+|:------------|:--------------------------------------------|:----------------------------------------------------------------------------------------------------|
+| 400         | `PROCESSING_FAILURE`                        | 处理失败。                                                                                  |
+| 400         | `ERROR_PARAMETERS`                          | 无效参数。                                                                                 |
+| 400         | `MISSING_PARAMETERS`                        | 缺少参数。                                                                                 |
+| 400         | `ERROR_INVALID_PARAMETER`                   | 无效参数。                                                                                  |
+| 400         | `PARAMETERS_CANNOT_EMPTY`                   | 参数不能为空。                                                                         |
+| 400         | `ERROR_MISSING_LIMIT_PARAMETER`             | 缺少Limit参数。                                                                            |
+| 400         | `ERROR_MISSING_TASKS_PARAMETER`             | 缺少Tasks参数。                                                                            |
+| 400         | `ERROR_MISSING_ASSURE_DIRECTION_PARAMETER`  | 缺少AssureDirection参数。                                                                  |
+| 400         | `ERROR_MISSING_MIN_HEIGHT_PARAMETER`        | 缺少MinHeight参数。                                                                        |
+| 400         | `ERROR_INVALID_SIDE_PARAMETER`              | Side参数值无效。                                                                   |
+| 400         | `ERROR_TOO_MANY_FILES`                      | 文件数量超出限制。                                                                  |
+| 400         | `ERROR_FACE_TRACE_LIMIT_EXCEEDED`           | 人脸或追踪限制超出。                                                                       |
+| 400         | `ERROR_INVALID_URL`                         | 无效的URL。                                                                                        |
+| 400         | `ERROR_DATABASE_LIMIT_EXCEEDED`             | 数据库限制超出。                                                                            |
+| 400         | `ERROR_INVALID_RESPONSE_FORMAT`             | 响应格式错误（不支持的Accept）。                                                   |
+| 400         | `ERROR_UNSUPPORTED_RESPONSE_FORMAT`         | 响应格式错误（不支持的格式）。                                                   |
+| 400         | `ERROR_TOO_MANY_GROUPS_IN_GROUP_LIST`       | group_list中组数过多。                                                                      |
+| 400         | `ERROR_TOO_MANY_UIDS_IN_UID_LIST`           | uid_list中UID数量过多。                                                                          |
+| 400         | `ERROR_TOO_MANY_APPS_IN_APP_LIST`           | app_list中应用数量过多。                                                                          |
+| 400         | `ERROR_BATCH_TASK_LIMIT_EXCEEDED`           | 批量任务处理限制超出。                                                               |
+| 400         | `ERROR_CLEANING_USER_GROUP_DATA`            | 正在清理用户组数据。                                                                           |
+| 400         | `ERROR_IMAGE_STORAGE_NOT_SUPPORTED`         | 不支持图片存储。                                                                        |
+| 400         | `ERROR_INSUFFICIENT_RESOURCES`              | 资源不足。                                                                             |
+| 400         | `ERROR_RESOURCE_IN_TRANSIT`                 | 资源传输中。                                                                                |
+| 400         | `ERROR_FILE_DOWNLOAD_FAILED`                | 文件下载失败。                                                                               |
+| 400         | `ERROR_FILE_UPLOAD_FAILED`                  | 文件上传失败。                                                                                 |
+| 400         | `FILE_DECODING_FAILURE`                     | 文件解码失败。                                                                               |
+| 400         | `ERROR_FACE_BLENDING_FAILED`                | 人脸融合失败。                                                                               |
+| 400         | `ERROR_FACE_IMAGE_ADDITION_FAILED`          | 添加人脸图像失败。                                                                           |
+| 400         | `ERROR_GET_FACE_IMAGE_FAILED`               | 获取人脸图像失败。                                                                           |
+| 400         | `ERROR_DATA_TRANSFER_FAILED`                | 数据传输（下载或上传）失败。                                                          |
+| 400         | `ERROR_TASK_REVOCATION_FAILED`              | 任务撤销失败。                                                                             |
+| 400         | `ERROR_RESOURCE_UNAVAILABLE`                | 资源暂时不可用。                                                                   |
+| 400         | `ERROR_FILE_DOWNLOAD_TIMEOUT`               | 文件下载超时。                                                                              |
+| 401         | `ERROR_USER_NOT_EXISTS`                     | 用户不存在。                                                                            |
+| 401         | `ERROR_APPLICATIONS_NOT_EXISTS`             | 应用程序不存在。                                                                     |
+| 403         | `ERROR_USER_LOCKED`                         | 用户已被锁定。                                                                                 |
+| 403         | `AI_SERVICE_UNAUTHORIZED`                   | AI服务未授权。请稍后重试，如未及时解决请联系平台。    |
+| 403         | `ERROR_ILLEGAL_FILE`                        | 非法文件。                                                                                       |
+| 404         | `ERROR_AI_NOT_EXISTS`                       | AI不存在或已被停用，请联系平台。                             |
+| 404         | `AI_SERVICE_NOT_FOUND`                      | 找不到AI服务。请稍后重试，如未及时解决请联系平台。       |
+| 404         | `ERROR_FILE_NOT_FOUND`                      | 找不到文件。                                                                                     |
+| 404         | `ERROR_FACE_NOT_FOUND`                      | 找不到人脸。                                                                                     |
+| 404         | `ERROR_USER_GROUP_NOT_FOUND`                | 找不到用户组。                                                                               |
+| 404         | `ERROR_USER_NOT_FOUND`                      | 找不到用户。                                                                                     |
+| 404         | `ERROR_FACE_TOKEN_NOT_FOUND`                | 找不到人脸令牌。                                                                               |
+| 404         | `ERROR_CONTENT_NOT_FOUND`                   | 找不到内容。                                                                                  |
+| 404         | `ERROR_RESOURCE_NOT_FOUND`                  | 找不到资源。                                                                                 |
+| 405         | `ERROR_ILLEGAL_OPERATION`                   | 非法操作。                                                                                  |
+| 409         | `ERROR_FACE_ALREADY_EXISTS`                 | 人脸已存在。                                                                                |
+| 409         | `ERROR_DATA_ALREADY_EXISTS`                 | 数据已存在。                                                                                |
+| 409         | `ERROR_USER_GROUP_ALREADY_EXISTS`           | 用户组已存在。                                                                          |
+| 409         | `ERROR_USER_ALREADY_EXISTS`                 | 用户已存在。                                                                                |
+| 409         | `ERROR_DUPLICATE_GROUP_NAME`                | 重复的组名。                                                                               |
+| 409         | `ERROR_RESOURCE_IN_USE`                     | 资源正在使用中。                                                                                 |
+| 409         | `ERROR_TASK_CONFLICT`                       | 任务冲突。                                                                                      |
+| 409         | `ERROR_TASK_REVOKED`                        | 任务已被撤销。                                                                      |
+| 410         | `ERROR_RESOURCE_RECLAIMED`                  | 资源已被回收。                                                                        |
+| 413         | `FILE_SIZE_EXCEEDS_LIMIT`                   | 文件大小超出限制。                                                                            |
+| 413         | `ERROR_CONTENT_TOO_LONG`                    | 内容长度超出限制。                                                                       |
+| 413         | `ERROR_VIDEO_DURATION_EXCEEDED`             | 视频时长超出限制。                                                                       |
+| 413         | `ERROR_REQUEST_BODY_TOO_LARGE`              | 请求体大小超出限制。                                                                    |
+| 413         | `ERROR_RESPONSE_BODY_TOO_LARGE`             | 响应体大小超出限制。                                                                   |
+| 415         | `UNSUPPORTED_FILE_TYPES`                    | 不支持的文件类型。                                                                             |
+| 415         | `ERROR_INVALID_OUTPUT_FORMAT`               | 无效的输出格式。                                                                              |
+| 415         | `ERROR_UNSUPPORTED_GRAYSCALE_IMAGE`         | 不支持灰度图像。                                                                      |
+| 422         | `UNSUPPORTED_PARAMETER_VALUES`              | 不支持的参数值。                                                                           |
+| 422         | `ERROR_INVALID_FACE_BOX_PARAMETER`          | 人脸框参数不符合要求。                                                      |
+| 422         | `ERROR_INVALID_BIG_EYES_PARAMETER`          | 大眼参数不符合要求。                                                      |
+| 422         | `ERROR_INVALID_FACE_SLIMMING_PARAMETER`     | 瘦脸参数不符合要求。                                                 |
+| 422         | `ERROR_INVALID_SMOOTHING_PARAMETER`         | 光滑参数不符合要求。                                                     |
+| 422         | `ERROR_INVALID_SKIN_WHITENING_PARAMETER`    | 美白参数不符合要求。                                                |
+| 422         | `ERROR_INVALID_PARAMETER_FORMAT`            | 无效的参数格式。                                                                           |
+| 422         | `ERROR_PARAMETER_CONVERSION_FAILED`         | 参数转换失败。                                                                        |
+| 422         | `FILE_RESOLUTION_EXCEEDS_LIMITS`            | 文件分辨率超出限制。                                                                     |
+| 422         | `ERROR_LOW_RESOLUTION`                      | 文件分辨率过低。                                                                            |
+| 422         | `ERROR_HIGH_RESOLUTION`                     | 文件分辨率过高。                                                                           |
+| 422         | `ERROR_INVALID_FILE`                        | 无效文件。                                                                                       |
+| 422         | `FILE_CONTENT_NON_COMPLIANCE`               | 文件内容不符合要求。                                                            |
+| 422         | `ERROR_INCORRECT_FILE_COUNT`                | 文件数量不正确。                                                                          |
+| 422         | `ERROR_NO_FACE_IN_FILE`                     | 文件中未检测到人脸。                                                                       |
+| 422         | `ERROR_FACE_SIZE_NOT_MEET_REQUIREMENTS`     | 人脸大小不符合要求。                                                               |
+| 422         | `ERROR_FACE_SIZE_RATIO_NOT_MET`             | 人脸大小比例不符合要求。                                                         |
+| 422         | `ERROR_SMALL_FACE_SIZE`                     | 人脸太小。                                                                                |
+| 422         | `ERROR_FACE_COPY_SCENE_MISMATCH`            | 人脸复制场景类型不匹配。                                                                      |
+| 422         | `ERROR_FACE_UNRECOGNIZABLE`                 | 无法识别人脸。                                                                           |
+| 422         | `ERROR_POOR_FACE_QUALITY`                   | 人脸质量差。                                                                                  |
+| 422         | `ERROR_BLURRY_FACE`                         | 人脸模糊。                                                                                        |
+| 422         | `ERROR_OBSTRUCTED_FACE`                     | 人脸被遮挡。                                                                                    |
+| 422         | `ERROR_POOR_FACE_LIGHTING`                  | 人脸光照不佳。                                                                                 |
+| 422         | `ERROR_INCOMPLETE_FACE`                     | 人脸不完整。                                                                                    |
+| 422         | `ERROR_FACE_NOT_FACING_FORWARD`             | 人脸未正面朝向。                                                                            |
+| 422         | `ERROR_MISSING_OUTPUT_FORMAT`               | 缺少输出格式。                                                                              |
+| 422         | `ERROR_QUALITY_SCORE_NOT_MEET_REQUIREMENTS` | 质量评分不符合要求。                                                           |
+| 422         | `ERROR_QUALITY_CONTROL_ERROR`               | 质量控制错误。                                                                              |
+| 422         | `ERROR_LIVENESS_CONTROL_ERROR`              | 活体检测错误。                                                                             |
+| 422         | `ERROR_SCENE_TYPE_MISMATCH`                 | 场景类型不匹配。                                                                                |
+| 422         | `ERROR_CARTOON_FACE_NOT_SUPPORTED`          | 不支持卡通人脸。                                                                         |
+| 422         | `ERROR_TEMPLATE_IMAGE_QUALITY_TOO_LOW`      | 模板图像质量过低。                                                                     |
+| 422         | `ERROR_ACTION_VERIFICATION_FAILED`          | 动作验证失败。                                                                         |
+| 422         | `ERROR_LEFT_EYE_OCCLUSION_TOO_HIGH`         | 左眼遮挡过高。                                                                        |
+| 422         | `ERROR_RIGHT_EYE_OCCLUSION_TOO_HIGH`        | 右眼遮挡过高。                                                                       |
+| 422         | `ERROR_LEFT_FACE_OCCLUSION_TOO_HIGH`        | 左脸遮挡过高。                                                                       |
+| 422         | `ERROR_RIGHT_FACE_OCCLUSION_TOO_HIGH`       | 右脸遮挡过高。                                                                      |
+| 422         | `ERROR_CHIN_OCCLUSION_TOO_HIGH`             | 下巴遮挡过高。                                                                            |
+| 422         | `ERROR_NOSE_OCCLUSION_TOO_HIGH`             | 鼻子遮挡过高。                                                                            |
+| 422         | `ERROR_MOUTH_OCCLUSION_TOO_HIGH`            | 嘴部遮挡过高。                                                                           |
+| 422         | `ERROR_SYNTHESIS_DETECTION_FAILED`          | 合成检测失败。                                                                         |
+| 422         | `ERROR_LIVENESS_DETECTION_FAILED`           | 活体检测失败。                                                                          |
+| 422         | `ERROR_NO_RECOGNITION_TARGET_DETECTED`      | 图像中未检测到识别目标。                                                        |
+| 422         | `ERROR_IMAGE_RECOGNITION_FAILED`            | 图像识别错误。                                                                            |
+| 422         | `ERROR_MASK_IMAGE_RESOLUTION_MISMATCH`      | `mask`和`image`的分辨率必须相同。                                                  |
+| 422         | `ERROR_TASK_STOPPED_PROCESSING`             | 任务已停止处理。                                                                   |
+| 422         | `EXCEEDING_LIMITS`                          | 超出限制。                                                                                      |
+| 422         | `ERROR_CONTENT_NON_COMPLIANCE`              | 内容不符合要求。                                                                 |
+| 429         | `ERROR_NOT_ENOUGH_CREDITS`                  | 积分不足。                                                                               |
+| 500         | `UNKNOWN_ERROR`                             | 未知错误。请稍后重试，如未及时解决请联系平台。              |
+| 500         | `SERVICE_INTERNAL_ERROR`                    | 服务内部错误。请稍后重试，如未及时解决请联系平台。     |
+| 500         | `FILE_SERVICE_ERROR`                        | 文件服务错误。请稍后重试，如未及时解决请联系平台。         |
+| 500         | `AI_SERVICE_ERROR`                          | AI服务错误。请稍后重试，如未及时解决请联系平台。           |
+| 500         | `AI_SERVICE_INTERNAL_ERROR`                 | AI服务内部错误。请稍后重试，如未及时解决请联系平台。  |
+| 502         | `ERROR_GATEWAY`                             | 网关错误，请稍后重试。如未及时解决请联系平台。  |
+| 503         | `AI_SERVICE_FLOW_RESTRICTION`               | AI服务限流。请稍后重试，如未及时解决请联系平台。 |
+| 504         | `AI_SERVICE_TIMEOUT`                        | AI服务超时。请稍后重试，如未及时解决请联系平台。         |

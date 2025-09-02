@@ -1,0 +1,84 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "AI发型设计 Docs",
+  "theme": "maple",
+  "layout": "sidenav",
+  "sidebar": {
+    "items": "card",
+    "width": 280
+  },
+  "topbar": {
+    "style": "gradient"
+  },
+  "search": {
+    "location": "top"
+  },
+  "rounded": "default",
+  "codeBlock": {
+    "mode": "dark"
+  },
+  "breadcrumbs": true,
+  "mobileOptimized": true,
+  "customCSS": [
+  ],
+  "logo": {
+    "light": "/logo/logo-black.png",
+    "dark": "/logo/logo-black.png"
+  },
+  "favicon": "/images/favicon.ico",
+  "colors": {
+    "primary": "#0D9373",
+    "light": "#55D799", 
+    "dark": "#0D9373"
+  },
+  "navigation": {
+    "groups": [
+      {
+      "group": "开始使用",
+      "pages": [
+        "common/index",
+        "common/quickstart",
+        "common/authentication"
+      ]
+    },
+    {
+      "group": "产品介绍",
+      "pages": [
+        "hairstyle-editor-pro/hairstyle-examples",
+        "hairstyle-editor-pro/introduction"
+      ]
+    },
+    {
+      "group": "开发指南",
+      "pages": [
+        "essentials/image-requirements",
+        "essentials/photo-validation-guide",
+        "essentials/error-handling"
+      ]
+    },
+    {
+      "group": "API参考",
+      "pages": [
+        "api-reference/hairstyle-editor-pro",
+        "api-reference/face-analysis",
+        "api-reference/async-task-results",
+        "api-reference/querying-credits"
+      ]
+    },
+    {
+      "group": "其他",
+      "pages": [
+        "essentials/response-description",
+        "essentials/errors"
+      ]
+    }
+    ]
+  },
+  "api": {
+    "baseUrl": "https://www.ailabapi.com"
+  },
+  "footerSocials": {
+    "twitter": "https://twitter.com/ailabtools",
+    "github": "https://github.com/ailabtools"
+  }
+}

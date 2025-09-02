@@ -1,57 +1,12 @@
 ---
-title: 错误码
-description: AILabTools API错误码完整列表
+title: '错误代码'
+description: 'AI发型设计 API 错误代码详细说明'
+icon: 'code'
 ---
 
-# 错误码
+# 错误代码
 
-本文档列出了AILabTools API可能返回的所有错误码及其解决方案。
-
-## 通用错误码
-
-| 错误码 | 错误类型 | 描述 | 解决方案 |
-|--------|----------|------|----------|
-| 0 | 成功 | 请求成功处理 | - |
-| 1001 | 参数错误 | 请求参数无效或缺失 | 检查请求参数格式和必需字段 |
-| 1002 | 图片格式不支持 | 上传的图片格式不在支持范围内 | 使用PNG、JPG或JPEG格式 |
-| 1003 | 图片大小超限 | 图片文件大小超过3MB限制 | 压缩图片或使用更小的图片 |
-| 1004 | 图片分辨率不符合要求 | 图片分辨率不在200x200px-1999x1999px范围内 | 调整图片分辨率 |
-| 1005 | 未检测到人脸 | 图片中没有检测到人脸 | 确保图片包含清晰的人脸 |
-| 1006 | 检测到多个人脸 | 图片中检测到多个人脸 | 使用只包含一个人脸的图片 |
-| 1007 | 人脸角度过大 | 人脸角度超过30度限制 | 使用正面或接近正面的照片 |
-| 1008 | 人脸占比过小 | 人脸在图片中的占比小于10% | 使用人脸占比更大的图片 |
-
-## 认证错误码
-
-| 错误码 | 错误类型 | 描述 | 解决方案 |
-|--------|----------|------|----------|
-| 2001 | 认证失败 | API密钥无效或已过期 | 检查API密钥是否正确，或重新生成密钥 |
-| 2002 | 权限不足 | 当前账户没有访问该API的权限 | 升级账户或联系客服 |
-| 2003 | 账户被禁用 | 账户已被禁用 | 联系客服恢复账户 |
-
-## 异步任务错误码
-
-| 错误码 | 错误类型 | 描述 | 解决方案 |
-|--------|----------|------|----------|
-| 3001 | 任务不存在 | 指定的task_id不存在 | 检查task_id是否正确 |
-| 3002 | 任务已过期 | 任务结果已超过24小时有效期 | 重新提交任务 |
-| 3003 | 任务处理失败 | 任务处理过程中发生错误 | 检查输入参数，重新提交任务 |
-| 3004 | 任务队列已满 | 服务器任务队列已满 | 稍后重试 |
-
-## 速率限制错误码
-
-| 错误码 | 错误类型 | 描述 | 解决方案 |
-|--------|----------|------|----------|
-| 4001 | 请求频率超限 | 超出每分钟请求次数限制 | 降低请求频率或升级账户 |
-| 4002 | 并发请求超限 | 超出同时处理的请求数量限制 | 减少并发请求数量 |
-
-## 服务器错误码
-
-| 错误码 | 错误类型 | 描述 | 解决方案 |
-|--------|----------|------|----------|
-| 5001 | 服务器内部错误 | 服务器处理请求时发生错误 | 稍后重试或联系客服 |
-| 5002 | 服务暂时不可用 | 服务正在维护或升级 | 稍后重试 |
-| 5003 | 数据库连接错误 | 数据库连接失败 | 稍后重试 |
+本文档详细说明了 AI发型设计 API 中可能出现的错误代码及其含义。
 
 ## 错误响应格式
 
@@ -59,85 +14,177 @@ description: AILabTools API错误码完整列表
 
 ```json
 {
-  "request_id": "req_123456789",
-  "log_id": "log_987654321",
-  "error_code": 1001,
+  "request_id": "请求ID",
+  "log_id": "日志ID", 
+  "error_code": 错误代码,
+  "error_msg": "错误消息",
   "error_detail": {
-    "status_code": 400,
-    "code": "INVALID_PARAMETER",
-    "code_message": "参数错误",
-    "message": "请求参数无效：image字段不能为空"
+    "status_code": HTTP状态码,
+    "code": "错误代码",
+    "code_message": "错误代码描述",
+    "message": "详细错误信息"
   }
 }
 ```
 
-## 错误处理最佳实践
+## HTTP 状态码
 
-### 1. 检查错误码
-```javascript
-if (response.error_code !== 0) {
-  console.error('API错误:', response.error_detail.message);
-  // 根据错误码进行相应处理
-}
-```
+| 状态码 | 说明 |
+|--------|------|
+| 200 | 请求成功 |
+| 400 | 请求参数错误 |
+| 401 | 认证失败 |
+| 422 | 请求内容无法处理 |
+| 429 | 请求频率超限 |
+| 500 | 服务器内部错误 |
 
-### 2. 重试机制
-```javascript
-async function callAPIWithRetry(apiCall, maxRetries = 3) {
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      const result = await apiCall();
-      if (result.error_code === 0) {
-        return result;
-      }
-      
-      // 对于某些错误码，不进行重试
-      if ([1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008].includes(result.error_code)) {
-        throw new Error(result.error_detail.message);
-      }
-      
-      // 等待后重试
-      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
-    } catch (error) {
-      if (i === maxRetries - 1) throw error;
-    }
-  }
-}
-```
+## 常见错误代码
 
-### 3. 用户友好的错误提示
+### 400 - 请求参数错误
+
+| 错误代码 | 说明 |
+|----------|------|
+| `PROCESSING_FAILURE` | 处理失败 |
+| `ERROR_PARAMETERS` | 无效参数 |
+| `MISSING_PARAMETERS` | 缺少参数 |
+| `ERROR_INVALID_PARAMETER` | 无效参数 |
+| `PARAMETERS_CANNOT_EMPTY` | 参数不能为空 |
+| `ERROR_MISSING_LIMIT_PARAMETER` | 缺少 Limit 参数 |
+| `ERROR_MISSING_TASKS_PARAMETER` | 缺少 Tasks 参数 |
+| `ERROR_MISSING_ASSURE_DIRECTION_PARAMETER` | 缺少 AssureDirection 参数 |
+| `ERROR_MISSING_MIN_HEIGHT_PARAMETER` | 缺少 MinHeight 参数 |
+| `ERROR_INVALID_SIDE_PARAMETER` | Side 参数值无效 |
+| `ERROR_TOO_MANY_FILES` | 文件数量超限 |
+| `ERROR_FACE_TRACE_LIMIT_EXCEEDED` | 人脸或轨迹数量超限 |
+| `ERROR_INVALID_URL` | 无效 URL |
+| `ERROR_DATABASE_LIMIT_EXCEEDED` | 数据库限制超限 |
+| `ERROR_INVALID_RESPONSE_FORMAT` | 响应格式不正确（Accept 不支持） |
+| `ERROR_UNSUPPORTED_RESPONSE_FORMAT` | 响应格式不正确（Format 不支持） |
+| `ERROR_TOO_MANY_GROUPS_IN_GROUP_LIST` | group_list 中组数过多 |
+| `ERROR_TOO_MANY_UIDS_IN_UID_LIST` | uid_list 中 UID 数量过多 |
+| `ERROR_TOO_MANY_APPS_IN_APP_LIST` | app_list 中应用数量过多 |
+| `ERROR_BATCH_TASK_LIMIT_EXCEEDED` | 批量任务处理限制超限 |
+| `ERROR_CLEANING_USER_GROUP_DATA` | 清理用户组数据 |
+| `ERROR_IMAGE_STORAGE_NOT_SUPPORTED` | 图片存储不支持 |
+| `ERROR_INSUFFICIENT_RESOURCES` | 资源不足 |
+| `ERROR_RESOURCE_IN_TRANSIT` | 资源传输中 |
+| `ERROR_FILE_DOWNLOAD_FAILED` | 文件下载失败 |
+| `ERROR_FILE_UPLOAD_FAILED` | 文件上传失败 |
+| `FILE_DECODING_FAILURE` | 文件解码失败 |
+| `ERROR_FACE_BLENDING_FAILED` | 人脸融合失败 |
+| `ERROR_FACE_IMAGE_ADDITION_FAILED` | 人脸图片添加失败 |
+
+### 401 - 认证失败
+
+| 错误代码 | 说明 |
+|----------|------|
+| `UNAUTHORIZED` | 无效或缺少 API Key |
+
+### 422 - 请求内容无法处理
+
+| 错误代码 | 说明 |
+|----------|------|
+| `ERROR_NO_FACE_IN_FILE` | 文件中未检测到人脸 |
+| `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY_FORMAT` | 人脸大小角度光线表情质量格式不合适 |
+| `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY_RESOLUTION` | 人脸大小角度光线表情质量分辨率不合适 |
+| `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY_FACE_NUM` | 人脸大小角度光线表情质量人脸数量不合适 |
+| `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY_FACE_RECT` | 人脸大小角度光线表情质量人脸区域不合适 |
+| `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY_FACE_ANGLE` | 人脸大小角度光线表情质量人脸角度不合适 |
+| `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY_FACE_PROPORTION` | 人脸大小角度光线表情质量人脸比例不合适 |
+| `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY_FACE_OCCLUSION` | 人脸大小角度光线表情质量人脸遮挡不合适 |
+| `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY_FACE_BLUR` | 人脸大小角度光线表情质量人脸模糊不合适 |
+| `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY_FACE_EXPRESSION` | 人脸大小角度光线表情质量人脸表情不合适 |
+| `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY_FACE_LIGHTING` | 人脸大小角度光线表情质量人脸光线不合适 |
+| `ERROR_FACE_NOT_PROPER_SIZE_ANGLE_LIGHTING_EXPRESSION_QUALITY_FACE_SIZE` | 人脸大小角度光线表情质量人脸大小不合适 |
+
+### 429 - 请求频率超限
+
+| 错误代码 | 说明 |
+|----------|------|
+| `RATE_LIMIT_EXCEEDED` | 请求频率超限 |
+
+### 500 - 服务器内部错误
+
+| 错误代码 | 说明 |
+|----------|------|
+| `INTERNAL_SERVER_ERROR` | 服务器内部错误 |
+| `SERVICE_UNAVAILABLE` | 服务不可用 |
+
+## 错误处理示例
+
+### JavaScript 错误处理
+
 ```javascript
-function getErrorMessage(errorCode) {
-  const errorMessages = {
-    1001: '请求参数有误，请检查输入',
-    1002: '图片格式不支持，请使用PNG、JPG或JPEG格式',
-    1003: '图片太大，请使用小于3MB的图片',
-    1004: '图片分辨率不符合要求',
-    1005: '未检测到人脸，请确保图片包含清晰的人脸',
-    1006: '检测到多个人脸，请使用只包含一个人脸的图片',
-    1007: '人脸角度过大，请使用正面照片',
-    1008: '人脸太小，请使用人脸占比更大的图片',
-    2001: 'API密钥无效，请检查密钥',
-    2002: '权限不足，请升级账户',
-    3001: '任务不存在',
-    3002: '任务已过期，请重新提交',
-    3003: '任务处理失败，请重试',
-    4001: '请求过于频繁，请稍后重试',
-    5001: '服务器错误，请稍后重试'
-  };
+function handleApiError(error) {
+  const { error_code, error_msg, error_detail } = error;
   
-  return errorMessages[errorCode] || '未知错误';
+  console.error('API Error:', {
+    code: error_code,
+    message: error_msg,
+    detail: error_detail
+  });
+  
+  switch (error_code) {
+    case 401:
+      // 认证错误
+      console.error('认证失败，请检查 API Key');
+      break;
+    case 400:
+      // 参数错误
+      console.error('参数错误:', error_detail.message);
+      break;
+    case 422:
+      // 文件错误
+      console.error('文件错误:', error_detail.message);
+      break;
+    case 429:
+      // 限流错误
+      console.error('请求频率超限，请稍后重试');
+      break;
+    case 500:
+      // 服务器错误
+      console.error('服务器错误，请稍后重试');
+      break;
+    default:
+      console.error('未知错误:', error_msg);
+  }
 }
 ```
 
-## 联系支持
+### Python 错误处理
 
-如果您遇到未在此文档中列出的错误，或者需要进一步的帮助，请：
+```python
+def handle_api_error(error):
+    error_code = error.get('error_code')
+    error_msg = error.get('error_msg')
+    error_detail = error.get('error_detail', {})
+    
+    print(f"API Error: {error_code} - {error_msg}")
+    
+    if error_code == 401:
+        print("认证失败，请检查 API Key")
+    elif error_code == 400:
+        print(f"参数错误: {error_detail.get('message', '')}")
+    elif error_code == 422:
+        print(f"文件错误: {error_detail.get('message', '')}")
+    elif error_code == 429:
+        print("请求频率超限，请稍后重试")
+    elif error_code == 500:
+        print("服务器错误，请稍后重试")
+    else:
+        print(f"未知错误: {error_msg}")
+```
 
-1. 记录完整的错误响应（包括request_id和log_id）
-2. 描述您执行的操作步骤
-3. 联系我们的技术支持团队
+## 调试建议
 
-<CTA href="mailto:support@ailabtools.com">
-  联系技术支持
-</CTA>
+1. **记录错误信息**：保存 `request_id` 和 `log_id` 用于调试
+2. **检查参数**：确保所有必需参数都已提供且格式正确
+3. **验证文件**：确保上传的文件符合要求
+4. **检查认证**：确保 API Key 有效且正确设置
+5. **联系支持**：如果问题持续存在，请联系技术支持并提供错误信息
+
+## 相关链接
+
+- [错误处理](/essentials/error-handling)
+- [响应说明](/essentials/response-description)
+- [最佳实践](/essentials/best-practices)
