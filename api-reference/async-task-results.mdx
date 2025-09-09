@@ -1,8 +1,28 @@
 ---
 title: '异步任务查询 API'
 description: '查询异步任务的处理结果，获取最终的处理结果'
-openapi: 'GET /api/common/query-async-task-result'
+openapi: 'GET /common/query-async-task-result'
 ---
+
+import { baseUrl } from '/snippets/config.mdx';
+
+## 请求
+- **URL**: {baseUrl}/common/query-async-task-result
+- **方法**: `POST`
+
+### 请求头
+
+| 字段 | 必填 | 类型 | 描述 |
+|:------|:---------|:-----|:------------|
+| `ailabapi-api-key` | 是 | `string` | 应用 API KEY。 [获取 API KEY](/common/authentication) |
+
+### 请求体参数
+
+#### 固定字段
+
+| 字段 | 必填 | 类型  | 描述 |
+|:------|:---------|:--------|:------------|
+| `task_id` | 是 | `string` | 异步 API 返回的 task_id |
 
 # 异步任务查询 API
 

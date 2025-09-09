@@ -1,15 +1,15 @@
 ---
-title: "积分查询 API"
-description: "AI发型设计 API - 积分查询 API 文档和使用指南。"
-openapi: 'GET /api/common/query-credits'
+title: "学分查询 API"
+description: "AI发型设计 API - 学分查询 API 文档和使用指南。"
+openapi: 'GET /common/query-credits'
 ---
-
-# AI发型设计 API - 积分查询 - API
+import { baseUrl } from '/snippets/config.mdx';
 
 ## 请求
 
-- **URL**: `https://www.ailabapi.com/api/common/query-credits`
+- **URL**: {baseUrl}/common/query-credits
 - **方法**: `GET`
+
 
 ### 请求头
 
@@ -31,21 +31,20 @@ openapi: 'GET /api/common/query-credits'
 
 ### 公共响应字段
 
-<a href="/doc/response-description" target="_blank">查看公共响应字段和错误代码</a>
+<a href="/essentials/response-description" target="_blank">查看公共响应字段和错误代码</a>
 
 ### 业务响应字段
 
 | 字段                    | 类型      | 范围                | 描述                         |
 |:-------------------------|:----------|:---------------------|:------------------------------------|
 | `data`                   | `array`   |                      | 数据数组                                     |
-| +`unique_sign`           | `string`  | [查看](#unique_sign) | 唯一标识符。              |
-| +`name`                  | `string`  |                      | 名称。                               |
-| +`balance`               | `float`   |                      | 积分余额。                     |
-| +`total`                 | `float`   |                      | 总积分。                      |
-| +`last_recharge_balance` | `float`   |                      | 上次购买后的余额。        |
-| +`balance_warning`       | `float`   |                      | 积分余额预警值。 |
-| +`first_buy_time`        | `integer` |                      | 首次购买时间。             |
-| +`last_update_time`      | `integer` |                      | 最后更新时间。                   |
+| +`name`                  | `string`  |                      | 名称。                               |\
+| +`balance`               | `float`   |                      | 积分余额。                     |\
+| +`total`                 | `float`   |                      | 总积分。                      |\
+| +`last_recharge_balance` | `float`   |                      | 上次购买后的余额。        |\
+| +`balance_warning`       | `float`   |                      | 积分余额预警值。 |\
+| +`first_buy_time`        | `integer` |                      | 首次购买时间。             |\
+| +`last_update_time`      | `integer` |                      | 最后更新时间。                   |\
 
 
 ### 响应示例
@@ -64,7 +63,7 @@ openapi: 'GET /api/common/query-credits'
     {
       "unique_sign":           "",
       "name":                  "",
-      "balance":               0,
+      "balance":               0,\
       "total":                 0,
       "last_recharge_balance": 0,
       "balance_warning":       0,

@@ -5,13 +5,12 @@
     "description": "AI发型设计 提供简单灵活的 API 端点，满足您的 AI 需求",
     "version": "1.0.0",
     "contact": {
-      "name": "AI发型设计 Support",
-      "url": "https://www.ailabtools.com/support"
+      "name": "AI发型设计 Support"
     }
   },
   "servers": [
     {
-      "url": "https://www.ailabapi.com",
+      "url": "https://api.aihairstyle.cn",
       "description": "Production server"
     }
   ],
@@ -255,7 +254,7 @@
     }
   },
   "paths": {
-    "/api/portrait/effects/hairstyle-editor-pro": {
+    "/portrait/effects/hairstyle-editor-pro": {
       "post": {
         "summary": "Hairstyle Editor Pro",
         "description": "基于稳定扩散模型的发型编辑API，支持多种发型和颜色选择",
@@ -319,7 +318,7 @@
         }
       }
     },
-    "/api/portrait/analysis/face-analysis": {
+    "/portrait/analysis/face-analysis": {
       "post": {
         "summary": "Face Analysis",
         "description": "分析图片中的人脸信息，包括人脸数量、位置、角度等",
@@ -383,7 +382,7 @@
         }
       }
     },
-    "/api/common/query-async-task-result": {
+    "/common/query-async-task-result": {
       "get": {
         "summary": "Query Async Task Results",
         "description": "查询异步任务的处理结果，获取最终的处理结果",
@@ -438,7 +437,7 @@
         }
       }
     },
-    "/api/common/query-credits": {
+    "/common/query-credits": {
         "parameters": [],
         "get": {
           "summary": "Querying credits",

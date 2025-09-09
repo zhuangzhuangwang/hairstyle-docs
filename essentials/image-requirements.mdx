@@ -98,36 +98,51 @@ icon: "image"
 <Card title="❎ 文件格式错误" >
 ```json
 {
-  "error_code": 400,
-  "error_msg": "Invalid file format",
-  "error_detail": {
-    "code": "ERROR_INVALID_FILE_FORMAT",
-    "message": "Only PNG, JPG, JPEG formats are supported"
-  }
+    "error_code": 422,
+    "error_code_str": "UNSUPPORTED_PARAMETER_VALUES",
+    "error_detail": {
+        "status_code": 422,
+        "code": "UNSUPPORTED_PARAMETER_VALUES",
+        "code_message": "Invalid parameter values.",
+        "message": "Invalid parameter values. - image: Only PNG, JPG, JPEG, BMP are supported."
+    },
+    "error_msg": "Invalid parameter values. - image: Only PNG, JPG, JPEG, BMP are supported.",
+    "log_id": "76947772",
+    "request_id": "76947772"
 }
 ```
 </Card>
 <Card title="🚫 无人脸检测" >
 ```json
 {
-  "error_code": 422,
-  "error_msg": "No face detected",
-  "error_detail": {
-    "code": "ERROR_NO_FACE_IN_FILE",
-    "message": "No face detected in the file"
-  }
+    "error_code": 422,
+    "error_code_str": "FILE_CONTENT_NON_COMPLIANCE",
+    "error_detail": {
+        "code": "ERROR_NO_FACE_IN_FILE",
+        "message": "pic not has face",
+        "status_code": 422,
+        "code_message": "No face detected in the file."
+    },
+    "error_msg": "File content does not meet requirements. - 222202 - pic not has face",
+    "log_id": "76947794",
+    "request_id": "3645368010"
 }
 ```
 </Card>
 <Card title="📦 文件大小超限" >
 ```json
 {
-  "error_code": 400,
-  "error_msg": "File too large",
-  "error_detail": {
-    "code": "ERROR_FILE_TOO_LARGE",
-    "message": "File size exceeds 3MB limit"
-  }
+    "error_code": 413,
+    "error_code_str": "FILE_SIZE_EXCEEDS_LIMIT",
+    "error_detail": {
+        "status_code": 413,
+        "code": "FILE_SIZE_EXCEEDS_LIMIT",
+        "code_message": "File size exceeds limit.",
+        "message": "File size exceeds limit. - image: No larger than 8 M."
+    },
+    "error_msg": "File size exceeds limit. - image: No larger than 8 M.",
+    "log_id": "76947844",
+    "request_id": "76947844"
 }
 ```
 </Card>
@@ -146,6 +161,7 @@ icon: "image"
   <div style={{padding: '15px', border: '1px solid #e5e7eb', borderRadius: '8px', backgroundColor: '#f9fafb'}}>
     <h4>🧪 测试验证</h4>
     <p>使用人脸分析 API 预先验证图片质量</p>
+    <a target="_blank" href='https://vision.aliyun.com/experience/detail?spm=a2cvz.27720474.J_9219321920.10.35ae5d53b1RSLb&tagName=facebody&children=DetectFace'>阿里云人脸检测</a>
   </div>
   <div style={{padding: '15px', border: '1px solid #e5e7eb', borderRadius: '8px', backgroundColor: '#f9fafb'}}>
     <h4>📦 批量处理</h4>

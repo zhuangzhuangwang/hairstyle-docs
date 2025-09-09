@@ -60,7 +60,6 @@
       "group": "API参考",
       "pages": [
         "api-reference/hairstyle-editor-pro",
-        "api-reference/face-analysis",
         "api-reference/async-task-results",
         "api-reference/querying-credits"
       ]
@@ -73,9 +72,6 @@
       ]
     }
     ]
-  },
-  "api": {
-    "baseUrl": "https://www.ailabapi.com"
   },
   "footerSocials": {
     "twitter": "https://twitter.com/ailabtools",

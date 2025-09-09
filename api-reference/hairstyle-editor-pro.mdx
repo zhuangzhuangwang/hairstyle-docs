@@ -1,96 +1,270 @@
 ---
 title: '发型编辑 API'
-description: '基于稳定扩散模型的发型编辑API，支持多种发型和颜色选择'
-openapi: 'POST /api/portrait/effects/hairstyle-editor-pro'
+description: '基于稳定扩散模型，支持数十种不同的发型和颜色，每个生成的结果都是独特的。可以同时生成多达四张结果图片，方便比较和选择最合适的发型。'
+openapi: 'POST /portrait/effects/hairstyle-editor-pro'
 ---
 
-# 发型编辑 Pro API
+import { baseUrl } from '/snippets/config.mdx';
 
-基于稳定扩散模型，支持数十种不同的发型和颜色，每个生成的结果都是独特的。可以同时生成多达四张结果图片，方便比较和选择最合适的发型。
+## 请求
 
-## 功能特点
+- **URL**: {baseUrl}/api/portrait/effects/hairstyle-editor-pro
+- **方法**: `POST`
+- **Content-Type**: `multipart/form-data`
 
-- **多种发型支持**：提供51种不同发型选择，涵盖男士、女士各种风格
-- **丰富发色选择**：支持21种发色，从自然色到时尚色应有尽有
-- **高质量输出**：生成图片分辨率高，细节丰富
-- **异步处理**：支持批量处理，可同时生成多张效果图
 
-## 图片要求
+<Tip>
+**照片验证指南**
 
-<Warning>
-为了获得最佳效果，请确保上传的图片符合以下要求：
-- 图片中必须包含清晰的人脸
-- 人脸占比应在20%-80%之间
-- 人脸角度不应超过45度
-- 人脸不应被遮挡或模糊
-</Warning>
+为了确保用户上传的照片符合发型处理 API 的要求，我们建议将工作流分为两个阶段：**人脸分析**和**发型处理**。这种方法通过在前端验证图像来最大程度地减少错误等待时间，确保它们在进行发型处理之前符合 API 标准。这可以增强整体用户体验。
 
-### 支持的图片格式
+有关详细信息，请参阅[照片验证指南](/essentials/photo-validation-guide)。
+</Tip>
 
-- **格式**：PNG、JPG、JPEG
-- **大小**：不超过 3MB
-- **分辨率**：200x200px ~ 1999x1999px
 
-## 发型代码参考
+
+### 图片要求
+
+- **图片格式**: `PNG` `JPG` `JPEG`
+- **图片大小**: 不超过3MB。
+- **图片分辨率**: 大于200x200px，小于1999x1999px。
+- **最小面部比例**: 为确保效果，图像中面部的比例不能小于20%。
+- **面部完整性**: 为确保效果，图像中的面部理想情况下不应被遮挡。
+- **面部角度**: 为确保效果，图像中的面部理想情况下应为正面，向左或向右旋转不超过45度。
+<table border="2"  style={{'border-collapse': 'collapse', 'text-align': 'center'}}>
+  <tr>
+    <th style={{'text-align':'center'}}>有效性</th>
+    <th style={{'text-align':'center'}}>示例图片</th>
+    <th style={{'text-align':'center'}}>无效原因</th>
+  </tr>
+  <tr>
+    <td style={{'text-align':'center'}}>✅</td>
+    <td>
+      <div style={{'display':'flex','flex-wrap':'wrap','justify-content':'space-around'}}>
+        <div style={{'max-width':'100px','margin':'5px'}}>
+          <img alt="Hairstyle Changer Pro" src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/valid-2.webp" />
+        </div>
+        <div style={{'max-width':'100px','margin':'5px'}}>
+          <img alt="Hairstyle Changer Pro" src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/valid-3.webp" />
+        </div>
+      </div>
+    </td>
+    <td style={{'text-align':'center'}}>有效</td>
+  </tr>
+  <tr>
+    <td style={{'text-align':'center'}} rowspan="5">❌</td>
+    <td>
+      <div style={{'display':'flex','flex-wrap':'wrap','justify-content':'space-around'}}>
+        <div style={{'max-width':'100px','margin':'5px'}}>
+          <img alt="Hairstyle Changer Pro" src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/no-face-1.webp" />
+        </div>
+        <div style={{'max-width':'100px','margin':'5px'}}>
+          <img alt="Hairstyle Changer Pro" src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/no-face-2.webp" />
+        </div>    
+      </div>
+    </td>
+    <td style={{'text-align':'center'}}>不包含人脸</td>
+  </tr>
+  <tr>
+    <td>
+      <div style={{'display':'flex','flex-wrap':'wrap','justify-content':'space-around'}}>
+        <div style={{'max-width':'100px','margin':'5px'}}>
+          <img alt="Hairstyle Changer Pro" src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/face-incomplete-1.webp" />
+        </div>
+        <div style={{'max-width':'100px','margin':'5px'}}>
+          <img alt="Hairstyle Changer Pro" src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/face-incomplete-2.webp" />
+        </div>    
+      </div>
+    </td>
+    <td style={{'text-align':'center'}}>面部不完整</td>
+  </tr>
+  <tr>
+    <td>
+      <div style={{'display':'flex','flex-wrap':'wrap','justify-content':'space-around'}}>
+        <div style={{'max-width':'100px','margin':'5px'}}>
+          <img alt="Hairstyle Changer Pro" src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/face-blocked-1.webp" />
+        </div>
+        <div style={{'max-width':'100px','margin':'5px'}}>
+          <img alt="Hairstyle Changer Pro" src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/face-blocked-2.webp" />
+        </div>    
+      </div>
+    </td>
+    <td style={{'text-align':'center'}}>面部被遮挡</td>
+  </tr>
+  <tr>
+    <td>
+      <div style={{'display':'flex','flex-wrap':'wrap','justify-content':'space-around'}}>
+        <div style={{'max-width':'100px','margin':'5px'}}>
+          <img alt="Hairstyle Changer Pro" src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/face-small-1.webp" />
+        </div>
+        <div style={{'max-width':'100px','margin':'5px'}}>
+          <img alt="Hairstyle Changer Pro" src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/face-small-2.webp" />
+        </div>    
+      </div>
+    </td>
+    <td style={{'text-align':'center'}}>面部比例过小</td>
+  </tr>
+  <tr>
+    <td>
+      <div style={{'display':'flex','flex-wrap':'wrap','justify-content':'space-around'}}>
+        <div style={{'max-width':'100px','margin':'5px'}}>
+          <img alt="Hairstyle Changer Pro" src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/face-big-1.webp" />
+        </div>
+        <div style={{'max-width':'100px','margin':'5px'}}>
+          <img alt="Hairstyle Changer Pro" src="https://ai-resource.ailabtools.com/hairstyle-changer-pro/valid-invalid-examples/face-big-2.webp" />
+        </div>    
+      </div>
+    </td>
+    <td style={{'text-align':'center'}}>面部比例过大</td>
+  </tr>
+</table>
+
+### 请求头
+
+| 字段 | 必填 | 类型 | 描述 |
+|:------|:---------|:-----|:------------|
+| `ailabapi-api-key` | 是 | `string` | 应用 API KEY。 [获取 API KEY](/common/authentication) |
+
+### 请求体参数
+
+#### 固定字段
+
+| 字段 | 必填 | 类型 | 选项 | 默认 | 描述 |
+|:------|:---------|:-----|:--------|:--------|:------------|
+| `task_type` | 是 | `string` | `async` | - | 任务类型。 `async`: 异步任务。 |
+| `auto` | 是 | `integer` | `1` | `1` | 模式。 `1`: 自动模式。 |
+| `image` | 是 | `file` | - | - | 主图片。 |
+| `hair_style` | 是 | `string` | [查看选项](#发型选项) | - | 发型选择。 |
+| `color` | 否 | `string` | [查看选项](#发色) | - | 发色选择。 |
+| `image_size` | 否 | `integer` | `1`, `2`, `3`, `4` | `1` | 返回图片数量。 |
+
+#### 发型选项
 
 <Tabs>
-<Tab title="男士发型">
-| 代码 | 名称 | 描述 |
-|------|------|------|
-| `BuzzCut` | 寸头 | 经典的寸头发型 |
-| `UnderCut` | 底切发型 | 现代感十足的底切发型 |
-| `Pompadour` | 蓬巴杜发型 | 复古经典的蓬巴杜发型 |
-| `SlickBack` | 背头 | 优雅的背头发型 |
-| `FauxHawk` | 假鹰发型 | 时尚的假鹰发型 |
-| `Spiky` | 刺猬头 | 动感的刺猬头发型 |
-| `CombOver` | 梳背头 | 经典的梳背头 |
-| `ManBun` | 男士发髻 | 现代的男士发髻 |
-| `Afro` | 爆炸头 | 自然的爆炸头发型 |
-| `LowFade` | 低渐变 | 低渐变发型 |
-| `UndercutLongHair` | 底切长发 | 底切长发发型 |
-| `TwoBlockHaircut` | 两段式发型 | 两段式发型 |
-| `TexturedFringe` | 纹理刘海 | 纹理刘海发型 |
-| `BluntBowlCut` | 钝角碗盖头 | 钝角碗盖头 |
-| `LongWavyCurtainBangs` | 长波浪窗帘刘海 | 长波浪窗帘刘海 |
-| `MessyTousled` | 凌乱蓬松 | 凌乱蓬松发型 |
-| `CornrowBraids` | 玉米辫 | 玉米辫发型 |
-| `LongHairTiedUp` | 长发扎起 | 长发扎起 |
-| `Middle-parted` | 中分发型 | 中分发型 |
+<Tab title="男性发型">
+| 值 | 描述 |
+|:------|:------------|
+| TinfoilPerm | 锡纸烫 |
+| Chestnut | 栗子头 |
+| ChoppyBangs | 碎盖刘海 |
+| SlickBack | 背头 |
+| BuzzCut | 寸头 |
+| CurlyShag | 凌乱卷发 |
+| UnderCut | 削边 |
+| WavyShag | 波浪卷发 |
+| LowFade | 低切 |
+| ManGreased | 男士油头 |
+| FauxHawk | 伪莫霍克发型 |
+| HighTightFade | 高渐变发型 |
+| Comma_Hair | 蓬松分头 |
+| Korean_Wavy_Crop | 韩式波浪分 |
+| Smooth_Crop | 齐刘海 |
+| Natural_Middle_Part | 自然中分 |
+| Side-Part_Crop | 商务侧分 |
+| FreshSide-Parted | 清新侧分 |
+| FluffyMiddlePart | 蓬松中分 |
+| Natural_Side-Part | 自然微分 |
+| Wolf_Crop | 美式前刺 |
+| Wind-Tousled_Crop | 明星三七分 |
+| Side-Parted_Textured | 韩式碎盖 |
+| WavyMiddlePart | 烫发中分 |
 </Tab>
-<Tab title="女士发型">
-| 代码 | 名称 | 描述 |
-|------|------|------|
-| `PixieCut` | 精灵头 | 短小精悍的精灵头 |
-| `BobCut` | 波波头 | 经典的波波头 |
-| `LongStraight` | 长直发 | 优雅的长直发 |
-| `LongCurly` | 长卷发 | 浪漫的长卷发 |
-| `Ponytail` | 马尾辫 | 经典的马尾辫 |
-| `TwinBraids` | 双辫子 | 可爱的双辫子 |
-| `FishtailBraid` | 鱼尾辫 | 精致的鱼尾辫 |
-| `Updo` | 盘发 | 正式的盘发 |
+
+<Tab title="女性发型">
+| 值 | 描述 |
+|:------|:------------|
+| ShortCurlyPixie | 短卷精灵头 |
+| JapaneseShort | 日系短发 |
+| MediumLongLayered | 中长层次发 |
+| ShortNeatBob | 干练短鲍勃头 |
+| DoubleBun | 双丸子头 |
+| PixieCut | 精灵短发 |
+| LongHimeCut | 长公主切 |
+| BobCut | 波波头 |
+| CurlyBob | 卷发波波头 |
+| LongCurly | 长卷发 |
+| LongWavy | 长波浪卷 |
+| FishtailBraid | 鱼尾辫 |
+| ShortPixieWithShavedSides | 短精灵剃边 |
+| Updo | 盘发 |
+| BluntBowlCut | 碗头 |
+| Chignon | 发簪 |
+| SlickedBack | 长背头 |
+| StackedCurlsInShortBob | 叠层卷波波 |
+| WavyFrenchBobVibesfrom1920 | 复古波波 |
+| ShortTwintails | 短双马尾 |
+| LongStraight | 长直发 |
+| TwinBraids | 双鱼尾 |
+| Ponytail | 高马尾 |
+| LongTwintails | 长双马尾 |
+| BoxBraids | 盒子辫 |
+| FrenchBangs | 法式刘海 |
+| ShoulderLengthHair | 齐肩发 |
+| Side-Parted_Waves | 三七分卷发(女) |
+| Magic_Perm | 魔术烫发(女) |
+| Vintage_Curls | 复古齐耳卷发(女) |
+| Mushroom_Curl | 短碎蘑菇卷发(女) |
+| Textured_Crop | 短碎发(女) |
+| Side_Flip_Perm | 单边反翘烫发(女) |
+| Layered_Waves | 波浪卷发 (女) |
 </Tab>
-<Tab title="发色效果">
-| 代码 | 名称 | 描述 |
-|------|------|------|
-| `blonde` | 金发 | 经典的金发 |
-| `brown` | 棕色 | 自然的棕色 |
-| `black` | 黑色 | 经典的黑色 |
-| `red` | 红色 | 热情的红色 |
-| `blue` | 蓝色 | 前卫的蓝色 |
-| `purple` | 紫色 | 神秘的紫色 |
-| `pink` | 粉色 | 甜美的粉色 |
-| `gradient` | 渐变 | 时尚的渐变发色 |
+
+<Tab title="发色">
+| 值 | 描述 |
+|:------|:------------|
+| `blonde` | 金发 |
+| `platinumBlonde` | 白金金发 |
+| `brown` | 棕发 |
+| `lightBrown` | 浅棕发 |
+| `blue` | 蓝发 |
+| `lightBlue` | 浅蓝发 |
+| `purple` | 紫发 |
+| `lightPurple` | 浅紫发 |
+| `pink` | 粉发 |
+| `black` | 黑发 |
+| `white` | 白发 |
+| `grey` | 灰发 |
+| `silver` | 银发 |
+| `red` | 红发 |
+| `orange` | 橙发 |
+| `green` | 绿发 |
+| `gradient` | 渐变发 |
+| `multicolored` | 彩色发 |
+| `darkBlue` | 深蓝发 |
+| `burgundy` | 酒红发 |
+| `darkGreen` | 深绿发 |
 </Tab>
 </Tabs>
 
-## 响应示例
+## 响应
 
-### 成功响应
+<Warning>
+**响应字段处理流程**
+
+1. **处理公共响应字段**
+   解析并验证公共响应字段，检查状态码或响应消息以确保请求成功且无错误。
+
+2. **处理业务响应字段**
+   如果公共响应字段有效且无错误，则继续处理业务响应字段中的业务逻辑。
+</Warning>
+
+### 公共响应字段
+
+[查看公共响应字段和错误代码](/essentials/response-description)
+
+### 业务响应字段
+
+| 字段 | 类型 | 选项 | 描述 |
+|:------|:-----|:--------|:------------|
+| `task_type` | `string` | `async` | 任务类型。 `async`: 异步任务。 |
+| `task_id` | `string` | - | 异步任务ID。调用[查询异步任务结果](/api-reference/async-task-results) API 时使用此字段。 |
+
+### 响应示例
 
 ```json
 {
-  "request_id": "123456789",
-  "log_id": "987654321",
+  "request_id": "",
+  "log_id": "",
   "error_code": 0,
   "error_msg": "",
   "error_detail": {
@@ -99,55 +273,7 @@ openapi: 'POST /api/portrait/effects/hairstyle-editor-pro'
     "code_message": "",
     "message": ""
   },
-  "task_id": "task_123456789",
-  "result": [
-    "https://example.com/result1.jpg",
-    "https://example.com/result2.jpg",
-    "https://example.com/result3.jpg",
-    "https://example.com/result4.jpg"
-  ]
+  "task_type": "",
+  "task_id": ""
 }
 ```
-
-### 错误响应
-
-```json
-{
-  "request_id": "123456789",
-  "log_id": "987654321",
-  "error_code": 422,
-  "error_msg": "No face detected in the file",
-  "error_detail": {
-    "status_code": 422,
-    "code": "ERROR_NO_FACE_IN_FILE",
-    "code_message": "No face detected in the file",
-    "message": "pic not has face"
-  }
-}
-```
-
-## 异步处理流程
-
-对于异步任务，完整的处理流程如下：
-
-1. **提交任务**：调用 API 提交处理任务
-2. **获取 task_id**：API 返回 task_id
-3. **查询结果**：使用 task_id 查询处理结果
-4. **获取最终结果**：当任务完成时获取最终结果
-
-<Tip>
-  异步任务结果有效期为 24 小时，建议每 5 秒查询一次结果。
-</Tip>
-
-## 最佳实践
-
-1. **图片预处理**：在上传前对图片进行适当的裁剪和调整
-2. **前端验证**：使用人脸分析 API 预先验证图片质量
-3. **错误处理**：实现完善的错误处理机制
-4. **缓存策略**：对相同参数的请求结果进行缓存
-
-## 相关链接
-
-- [人脸分析 API](/api-reference/face-analysis)
-- [异步任务查询 API](/api-reference/async-task-results)
-- [错误处理](/essentials/error-handling)
