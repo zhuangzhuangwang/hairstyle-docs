@@ -37,13 +37,7 @@
             "type": "string",
             "description": "Hairstyle code",
             "enum": [
-              "BuzzCut", "UnderCut", "Pompadour", "SlickBack", "CurlyShag", "WavyShag",
-              "FauxHawk", "Spiky", "CombOver", "HighTightFade", "ManBun", "Afro",
-              "LowFade", "UndercutLongHair", "TwoBlockHaircut", "TexturedFringe",
-              "BluntBowlCut", "LongWavyCurtainBangs", "MessyTousled", "CornrowBraids",
-              "LongHairTiedUp", "Middle-parted", "PixieCut", "BobCut", "LongStraight",
-              "LongCurly", "Ponytail", "TwinBraids", "FishtailBraid", "Updo",
-              "blonde", "brown", "black", "red", "blue", "purple", "pink", "gradient"
+              "TinfoilPerm", "Chestnut", "ChoppyBangs", "SlickBack", "BuzzCut", "CurlyShag", "UnderCut", "WavyShag", "LowFade", "ManGreased", "FauxHawk", "HighTightFade", "Comma_Hair", "Korean_Wavy_Crop", "Smooth_Crop", "Natural_Middle_Part", "Side-Part_Crop", "FreshSide-Parted", "FluffyMiddlePart", "Natural_Side-Part", "Wolf_Crop", "Wind-Tousled_Crop", "Side-Parted_Textured", "WavyMiddlePart", "ShortCurlyPixie", "JapaneseShort", "MediumLongLayered", "ShortNeatBob", "DoubleBun", "PixieCut", "LongHimeCut", "BobCut", "CurlyBob", "LongCurly", "LongWavy", "FishtailBraid", "ShortPixieWithShavedSides", "Updo", "BluntBowlCut", "Chignon", "SlickedBack", "StackedCurlsInShortBob", "WavyFrenchBobVibesfrom1920", "ShortTwintails", "LongStraight", "TwinBraids", "Ponytail", "LongTwintails", "BoxBraids", "FrenchBangs", "ShoulderLengthHair", "Side-Parted_Waves", "Magic_Perm", "Vintage_Curls", "Mushroom_Curl", "Textured_Crop", "Side_Flip_Perm", "Layered_Waves"
             ]
           },
           "color": {
@@ -254,7 +248,7 @@
     }
   },
   "paths": {
-    "/portrait/effects/hairstyle-editor-pro": {
+    "/api/zh-cn/portrait/effects/hairstyle-editor-pro": {
       "post": {
         "summary": "Hairstyle Editor Pro",
         "description": "基于稳定扩散模型的发型编辑API，支持多种发型和颜色选择",
@@ -318,7 +312,7 @@
         }
       }
     },
-    "/portrait/analysis/face-analysis": {
+    "/api/zh-cn/portrait/analysis/face-analysis": {
       "post": {
         "summary": "Face Analysis",
         "description": "分析图片中的人脸信息，包括人脸数量、位置、角度等",
@@ -382,7 +376,7 @@
         }
       }
     },
-    "/common/query-async-task-result": {
+    "/api/zh-cn/common/query-async-task-result": {
       "get": {
         "summary": "Query Async Task Results",
         "description": "查询异步任务的处理结果，获取最终的处理结果",
@@ -437,7 +431,7 @@
         }
       }
     },
-    "/common/query-credits": {
+    "/api/zh-cn/common/query-credits": {
         "parameters": [],
         "get": {
           "summary": "Querying credits",
