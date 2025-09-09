@@ -248,7 +248,7 @@
     }
   },
   "paths": {
-    "/api/zh-cn/portrait/effects/hairstyle-editor-pro": {
+    "/portrait/effects/hairstyle-editor-pro": {
       "post": {
         "summary": "Hairstyle Editor Pro",
         "description": "基于稳定扩散模型的发型编辑API，支持多种发型和颜色选择",
@@ -312,7 +312,7 @@
         }
       }
     },
-    "/api/zh-cn/portrait/analysis/face-analysis": {
+    "/portrait/analysis/face-analysis": {
       "post": {
         "summary": "Face Analysis",
         "description": "分析图片中的人脸信息，包括人脸数量、位置、角度等",
@@ -376,7 +376,7 @@
         }
       }
     },
-    "/api/zh-cn/common/query-async-task-result": {
+    "/common/query-async-task-result": {
       "get": {
         "summary": "Query Async Task Results",
         "description": "查询异步任务的处理结果，获取最终的处理结果",
@@ -431,7 +431,7 @@
         }
       }
     },
-    "/api/zh-cn/common/query-credits": {
+    "/common/query-credits": {
         "parameters": [],
         "get": {
           "summary": "Querying credits",
