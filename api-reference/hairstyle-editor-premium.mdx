@@ -1,0 +1,206 @@
+---
+title: '发型设计专业版 API'
+description: '支持预设发型和参考图发型迁移，可使用参考图发色或预设发色，适合更高可控性的发型生成场景。'
+openapi: 'POST /portrait/effects/hairstyle-editor-premium'
+---
+
+import { baseUrl } from '/snippets/config.mdx';
+
+## 请求
+
+- **URL**: {baseUrl}/portrait/effects/hairstyle-editor-premium
+- **方法**: `POST`
+- **Content-Type**: `multipart/form-data`
+
+<Tip>
+专业版是异步接口。提交任务后请保存响应中的 `task_id`，再调用[异步任务查询 API](/api-reference/async-task-results) 获取最终图片结果。
+</Tip>
+
+### 图片要求
+
+- **图片格式**: `PNG` `JPG` `JPEG`
+- **图片大小**: 不超过 5MB。
+- **图片分辨率**: 大于 200x200px，小于 4090x4090px。
+- **最小面部比例**: 为确保效果，图像中面部的比例不能小于 10%。
+- **面部完整性**: 建议使用面部无遮挡、五官清晰的照片。
+- **面部角度**: 建议使用正面或接近正面的照片。
+
+<Warning>
+当同时传入 `hair_style` 和 `image_template` 时，系统优先使用 `hair_style`，并忽略 `image_template`。如果需要参考图发型迁移，请不要传 `hair_style`。
+</Warning>
+
+### 请求头
+
+| 字段 | 必填 | 类型 | 描述 |
+|:------|:---------|:-----|:------------|
+| `ailabapi-api-key` | 是 | `string` | 应用 API KEY。 [获取 API KEY](/common/authentication) |
+
+### 请求体参数
+
+| 字段 | 必填 | 类型 | 默认 | 描述 |
+|:------|:---------|:-----|:--------|:------------|
+| `image` | 是 | `file` | - | 主图片。用于生成发型效果的人像图片。 |
+| `hair_style` | 否 | `string` | - | 内置发型模板。`hair_style` 和 `image_template` 至少传一个。 |
+| `image_template` | 否 | `file` | - | 发型参考图。用于参考图发型迁移。 |
+| `color` | 否 | `string` | `reference` | 发色。`reference` 表示使用参考图发色，也可以传入预设发色。 |
+
+### 发型来源
+
+| 模式 | 参数组合 | 说明 |
+|------|------|------|
+| 预设发型 | `image` + `hair_style` | 使用内置发型模板生成结果。 |
+| 参考图发型 | `image` + `image_template` | 将参考图中的发型迁移到主图人物。 |
+| 参考图发型和发色 | `image` + `image_template` + `color=reference` | 同时参考发型和发色。 |
+| 预设发型和预设发色 | `image` + `hair_style` + 预设 `color` | 使用指定发型和指定发色。 |
+
+## 参数选项
+
+### 发型选项
+
+专业版支持传统发型值和编号发型值。OpenAPI 的 Try It 面板中已包含完整枚举。
+
+<Tabs>
+<Tab title="常用男士发型">
+| 值 | 描述 |
+|:------|:------------|
+| `BuzzCut` | 寸头 |
+| `UnderCut` | 削边 |
+| `Pompadour` | 蓬巴杜 |
+| `SlickBack` | 背头 |
+| `CurlyShag` | 凌乱卷发 |
+| `WavyShag` | 波浪卷发 |
+| `FauxHawk` | 伪莫霍克发型 |
+| `HighTightFade` | 高渐变发型 |
+| `LowFade` | 低渐变 |
+| `ManBun` | 男士发髻 |
+| `Afro` | 非洲卷 |
+| `TwoBlockHaircut` | 韩式两层剪 |
+| `TexturedFringe` | 纹理刘海 |
+| `Comma_Hair` | 逗号刘海 |
+| `Korean_Wavy_Crop` | 韩式波浪短发 |
+| `Natural_Middle_Part` | 自然中分 |
+| `Side-Part_Crop` | 商务侧分 |
+| `FluffyMiddlePart` | 蓬松中分 |
+| `Wolf_Crop` | 狼尾短发 |
+| `TinfoilPerm` | 锡纸烫 |
+</Tab>
+
+<Tab title="常用女士发型">
+| 值 | 描述 |
+|:------|:------------|
+| `ShortPixieWithShavedSides` | 短精灵剃边 |
+| `ShortNeatBob` | 干练短波波 |
+| `DoubleBun` | 双丸子头 |
+| `Updo` | 盘发 |
+| `Chignon` | 发髻 |
+| `PixieCut` | 精灵短发 |
+| `LongCurly` | 长卷发 |
+| `CurlyBob` | 卷发波波头 |
+| `BobCut` | 波波头 |
+| `ShortTwintails` | 短双马尾 |
+| `LongStraight` | 长直发 |
+| `LongWavy` | 长波浪卷 |
+| `FishtailBraid` | 鱼尾辫 |
+| `Ponytail` | 马尾 |
+| `ShoulderLengthHair` | 齐肩发 |
+| `LongHimeCut` | 长公主切 |
+| `Layered_Waves` | 层次波浪 |
+| `FrenchBangs` | 法式刘海 |
+| `JapaneseShort` | 日系短发 |
+| `MediumLongLayered` | 中长层次发 |
+</Tab>
+
+<Tab title="编号发型">
+| 值 | 描述 |
+|:------|:------------|
+| `male_hairstyle_0001` - `male_hairstyle_0062` | 男士编号发型 |
+| `female_hairstyle_0001` - `female_hairstyle_0073` | 女士编号发型 |
+</Tab>
+</Tabs>
+
+### 发色
+
+| 值 | 描述 |
+|:------|:------------|
+| `reference` | 使用参考图发色 |
+| `blonde` | 金发 |
+| `platinumBlonde` | 白金金发 |
+| `brown` | 棕发 |
+| `lightBrown` | 浅棕发 |
+| `blue` | 蓝发 |
+| `lightBlue` | 浅蓝发 |
+| `purple` | 紫发 |
+| `lightPurple` | 浅紫发 |
+| `pink` | 粉发 |
+| `black` | 黑发 |
+| `white` | 白发 |
+| `grey` | 灰发 |
+| `silver` | 银发 |
+| `red` | 红发 |
+| `orange` | 橙发 |
+| `green` | 绿发 |
+| `gradient` | 渐变发 |
+| `multicolored` | 彩色发 |
+| `darkBlue` | 深蓝发 |
+| `burgundy` | 酒红发 |
+| `darkGreen` | 深绿发 |
+
+## 异步处理流程
+
+1. 调用本接口提交任务。
+2. 从响应中读取 `task_id`。
+3. 调用[异步任务查询 API](/api-reference/async-task-results)，传入 `task_id`。
+4. 当 `task_status=2` 时，从 `result` 中读取生成图片 URL。
+
+## 计费
+
+- **单次费用**: `￥0.15/次`
+- **计费方式**: 异步任务按成功提交次数计费。
+- **查询任务**: 查询异步任务结果不重复计费。
+
+## 响应
+
+<Warning>
+**响应字段处理流程**
+
+1. **处理公共响应字段**
+   解析并验证公共响应字段，检查状态码或响应消息以确保请求成功且无错误。
+
+2. **处理业务响应字段**
+   如果公共响应字段有效且无错误，则继续处理业务响应字段中的 `task_id`。
+</Warning>
+
+### 公共响应字段
+
+[查看公共响应字段和错误代码](/essentials/response-description)
+
+### 业务响应字段
+
+| 字段 | 类型 | 描述 |
+|:------|:-----|:------------|
+| `task_id` | `string` | 异步任务 ID。调用[异步任务查询 API](/api-reference/async-task-results) 时使用此字段。 |
+
+### 响应示例
+
+```json
+{
+  "request_id": "",
+  "log_id": "",
+  "error_code": 0,
+  "error_msg": "",
+  "error_detail": {
+    "status_code": 200,
+    "code": "",
+    "code_message": "",
+    "message": ""
+  },
+  "task_id": ""
+}
+```
+
+## 相关链接
+
+- [发型设计专业版介绍](/hairstyle-editor-premium/introduction)
+- [异步任务查询 API](/api-reference/async-task-results)
+- [图片验证指南](/essentials/photo-validation-guide)
+- [错误处理](/essentials/error-handling)
