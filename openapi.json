@@ -56,6 +56,40 @@
           }
         }
       },
+      "HairstyleEditorPremiumForm": {
+        "type": "object",
+        "required": ["image"],
+        "description": "Provide hair_style or image_template. If both are provided, hair_style takes precedence.",
+        "properties": {
+          "image": {
+            "type": "string",
+            "format": "binary",
+            "description": "Source image (PNG/JPG/JPEG). ≤5MB, 200x200~4090x4090. Face proportion must be at least 10%."
+          },
+          "hair_style": {
+            "type": "string",
+            "description": "Built-in hairstyle preset. Provide this field or image_template. If both are provided, hair_style takes precedence.",
+            "enum": [
+              "BuzzCut", "UnderCut", "Pompadour", "SlickBack", "CurlyShag", "WavyShag", "FauxHawk", "Spiky", "CombOver", "HighTightFade", "ManBun", "Afro", "LowFade", "UndercutLongHair", "TwoBlockHaircut", "TexturedFringe", "BluntBowlCut", "LongWavyCurtainBangs", "MessyTousled", "CornrowBraids", "LongHairTiedUp", "Middle-parted", "ManGreased", "WavyMiddlePart", "Natural_Side-Part", "Wolf_Crop", "Wind-Tousled_Crop", "Side-Parted_Textured", "FluffyMiddlePart", "FreshSide-Parted", "Smooth_Crop", "Korean_Wavy_Crop", "Comma_Hair", "Side-Part_Crop", "Natural_Middle_Part", "ShortPixieWithShavedSides", "ShortNeatBob", "DoubleBun", "Updo", "Spiked", "bowlCut", "Chignon", "PixieCut", "SlickedBack", "LongCurly", "CurlyBob", "StackedCurlsInShortBob", "SidePartCombOverHairstyleWithHighFade", "WavyFrenchBobVibesfrom1920", "BobCut", "ShortTwintails", "ShortCurlyPixie", "LongStraight", "LongWavy", "FishtailBraid", "TwinBraids", "Ponytail", "Dreadlocks", "Cornrows", "ShoulderLengthHair", "LooseCurlyAfro", "LongTwintails", "LongHimeCut", "BoxBraids", "Layered_Waves", "Side_Flip_Perm", "Textured_Crop", "Mushroom_Curl", "Vintage_Curls", "Magic_Perm", "Side-Parted_Waves", "Fluffy_Short", "Smooth_Inward_Bob", "Neat_Short", "Natural_Short", "Chic_Tapered_Bob", "Edgy_Textured_Pixie", "Elegant_Wavy_Crop", "Chic_Wavy_Pixie", "Elegant_Side_Wave", "Soft_Layered_Curl", "Executive_Pixie", "Curved_Chic_Bob", "Airy_Short_Curls", "Playful_Curly_Bob", "Playful_Wavy_Bob", "Elegant_Soft_Curl", "Elegant_Smooth_Bob", "Retro_Airy_Curl", "Soft_Wavy_Bob", "Light_Inward_Bob", "Neat_Curly_Crop_Cut", "Elegant_Volumized_Bob", "Modern_Curls_Chic", "Mocha_Volume_Pixie", "Elegant_Side_Flow", "Chestnut", "ChoppyBangs", "StructuredWavyShag", "TinfoilPerm", "ClassicWavyBob", "Fluffy_Pixie_Cut", "FrenchBangs", "JapaneseShort", "MediumLongLayered",
+              "male_hairstyle_0001", "male_hairstyle_0002", "male_hairstyle_0003", "male_hairstyle_0004", "male_hairstyle_0005", "male_hairstyle_0006", "male_hairstyle_0007", "male_hairstyle_0008", "male_hairstyle_0009", "male_hairstyle_0010", "male_hairstyle_0011", "male_hairstyle_0012", "male_hairstyle_0013", "male_hairstyle_0014", "male_hairstyle_0015", "male_hairstyle_0016", "male_hairstyle_0017", "male_hairstyle_0018", "male_hairstyle_0019", "male_hairstyle_0020", "male_hairstyle_0021", "male_hairstyle_0022", "male_hairstyle_0023", "male_hairstyle_0024", "male_hairstyle_0025", "male_hairstyle_0026", "male_hairstyle_0027", "male_hairstyle_0028", "male_hairstyle_0029", "male_hairstyle_0030", "male_hairstyle_0031", "male_hairstyle_0032", "male_hairstyle_0033", "male_hairstyle_0034", "male_hairstyle_0035", "male_hairstyle_0036", "male_hairstyle_0037", "male_hairstyle_0038", "male_hairstyle_0039", "male_hairstyle_0040", "male_hairstyle_0041", "male_hairstyle_0042", "male_hairstyle_0043", "male_hairstyle_0044", "male_hairstyle_0045", "male_hairstyle_0046", "male_hairstyle_0047", "male_hairstyle_0048", "male_hairstyle_0049", "male_hairstyle_0050", "male_hairstyle_0051", "male_hairstyle_0052", "male_hairstyle_0053", "male_hairstyle_0054", "male_hairstyle_0055", "male_hairstyle_0056", "male_hairstyle_0057", "male_hairstyle_0058", "male_hairstyle_0059", "male_hairstyle_0060", "male_hairstyle_0061", "male_hairstyle_0062",
+              "female_hairstyle_0001", "female_hairstyle_0002", "female_hairstyle_0003", "female_hairstyle_0004", "female_hairstyle_0005", "female_hairstyle_0006", "female_hairstyle_0007", "female_hairstyle_0008", "female_hairstyle_0009", "female_hairstyle_0010", "female_hairstyle_0011", "female_hairstyle_0012", "female_hairstyle_0013", "female_hairstyle_0014", "female_hairstyle_0015", "female_hairstyle_0016", "female_hairstyle_0017", "female_hairstyle_0018", "female_hairstyle_0019", "female_hairstyle_0020", "female_hairstyle_0021", "female_hairstyle_0022", "female_hairstyle_0023", "female_hairstyle_0024", "female_hairstyle_0025", "female_hairstyle_0026", "female_hairstyle_0027", "female_hairstyle_0028", "female_hairstyle_0029", "female_hairstyle_0030", "female_hairstyle_0031", "female_hairstyle_0032", "female_hairstyle_0033", "female_hairstyle_0034", "female_hairstyle_0035", "female_hairstyle_0036", "female_hairstyle_0037", "female_hairstyle_0038", "female_hairstyle_0039", "female_hairstyle_0040", "female_hairstyle_0041", "female_hairstyle_0042", "female_hairstyle_0043", "female_hairstyle_0044", "female_hairstyle_0045", "female_hairstyle_0046", "female_hairstyle_0047", "female_hairstyle_0048", "female_hairstyle_0049", "female_hairstyle_0050", "female_hairstyle_0051", "female_hairstyle_0052", "female_hairstyle_0053", "female_hairstyle_0054", "female_hairstyle_0055", "female_hairstyle_0056", "female_hairstyle_0057", "female_hairstyle_0058", "female_hairstyle_0059", "female_hairstyle_0060", "female_hairstyle_0061", "female_hairstyle_0062", "female_hairstyle_0063", "female_hairstyle_0064", "female_hairstyle_0065", "female_hairstyle_0066", "female_hairstyle_0067", "female_hairstyle_0068", "female_hairstyle_0069", "female_hairstyle_0070", "female_hairstyle_0071", "female_hairstyle_0072", "female_hairstyle_0073"
+            ]
+          },
+          "image_template": {
+            "type": "string",
+            "format": "binary",
+            "description": "Reference image for hairstyle transfer. Provide this field or hair_style. If both are provided, image_template is ignored. PNG/JPG/JPEG, ≤5MB, 200x200~4090x4090."
+          },
+          "color": {
+            "type": "string",
+            "description": "Hair color preset. reference uses the hair color from image_template.",
+            "default": "reference",
+            "enum": [
+              "reference", "blonde", "platinumBlonde", "brown", "lightBrown", "blue", "lightBlue", "purple", "lightPurple", "pink", "black", "white", "grey", "silver", "red", "orange", "green", "gradient", "multicolored", "darkBlue", "burgundy", "darkGreen"
+            ]
+          }
+        }
+      },
       "FaceAnalysisForm": {
         "type": "object",
         "required": ["task_type", "image"],
@@ -144,6 +178,22 @@
                   "description": "Result image URL"
                 },
                 "description": "Array of result image URLs"
+              }
+            }
+          }
+        ]
+      },
+      "HairstyleEditorPremiumResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SuccessResponse"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "description": "Task ID for querying async task results"
               }
             }
           }
@@ -275,6 +325,70 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HairstyleEditorProResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/portrait/effects/hairstyle-editor-premium": {
+      "post": {
+        "summary": "Hairstyle Editor Premium",
+        "description": "支持预设发型和参考图发型迁移的发型设计专业版 API",
+        "tags": ["AI Portrait"],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/HairstyleEditorPremiumForm"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HairstyleEditorPremiumResponse"
                 }
               }
             }
