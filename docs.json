@@ -3,6 +3,11 @@
   "name": "AI发型设计 Docs",
   "theme": "maple",
   "layout": "sidenav",
+  "api": {
+    "playground": {
+      "proxy": false
+    }
+  },
   "sidebar": {
     "items": "card",
     "width": 280
